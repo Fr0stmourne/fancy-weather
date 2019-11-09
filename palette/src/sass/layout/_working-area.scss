@@ -10,4 +10,11 @@
     border: 2px solid black;
     image-rendering: pixelated;
   }
+
+  & img {
+    image-rendering: pixelated;
+    border: 2px solid black;
+    width: 512px;
+    height: 512px;
+  }
 }

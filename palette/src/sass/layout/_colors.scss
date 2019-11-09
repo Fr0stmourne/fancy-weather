@@ -28,7 +28,7 @@
     padding: 20px 15px;
     padding-left: 70px;
 
-    &::before {
+    &-btn {
       content: "";
       position: absolute;
       left: 12px;
@@ -40,11 +40,15 @@
 
     }
 
-    &--red::before {
+    &--previous &-btn {
+      background-color: lightgreen;
+    }
+
+    &--red &-btn {
       background-color: red;
     }
 
-    &--blue::before {
+    &--blue &-btn {
       background-color: blue;
     }
   }
@@ -60,11 +64,7 @@
     cursor: pointer;
 
     &--current {
-      background-color: gray;
-    }
-
-    &--previous {
-      background-color: lightgreen;
+      background-color: black;
     }
   }
 }

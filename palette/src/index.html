@@ -27,11 +27,14 @@
         <section class="controls">
           <h2 class="controls__title visually-hidden">Controls</h2>
           <ul class="controls__controls">
-            <li class="controls__control"><button class="controls__control-btn controls__control-btn--paint">Paint
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--paint"
+                data-key="KeyB">Paint
                 bucket (B)</button></li>
-            <li class="controls__control"><button class="controls__control-btn controls__control-btn--choose">Choose
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--choose"
+                data-key="KeyC">Choose
                 color (C)</button></li>
-            <li class="controls__control"><button class="controls__control-btn controls__control-btn--pencil">Pencil
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--pencil"
+                data-key="KeyP">Pencil
                 (P)</button></li>
             <li class="controls__control"><button
                 class="controls__control-btn controls__control-btn--move">Move</button></li>
@@ -45,13 +48,14 @@
             <li class="colors__control"><label class="colors__label colors__label--current"><input type="color"
                   class="colors__control-btn visually-hidden"></label><span class="colors__control-desc">Current
                 color</span></li>
-            <li class="colors__control"><label class="colors__label colors__label--previous"><input type="color"
-                  class="colors__control-btn visually-hidden"></label><span class="colors__control-desc">Prev
-                color</span></li>
+            <li class="colors__control colors__color colors__color--previous"><button class="colors__color-btn"><span
+                  class="visually-hidden">Previous color</span></button>Previous color</li>
           </ul>
           <ul class="colors__current">
-            <li class="colors__color colors__color--red">Red</li>
-            <li class="colors__color colors__color--blue">Blue</li>
+            <li class="colors__color colors__color--red"><button class="colors__color-btn"><span
+                  class="visually-hidden">Red</span></button>Red</li>
+            <li class="colors__color colors__color--blue"><button class="colors__color-btn"><span
+                  class="visually-hidden">Blue</span></button>Blue</li>
           </ul>
         </section>
         <section class="picture-controls">
