@@ -61,18 +61,25 @@ function updateControls(e, evtCode) {
 }
 
 canvas.addEventListener('mousedown', (evt) => {
+
   if (mode === 'pencil') {
     canvas.addEventListener('mousemove', pressedMouseMoveHandler);
     const coordinates = getMousePos(evt);
     ctx.fillStyle = fillColor;
     ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
+
+    canvas.addEventListener('mouseleave', () => {
+      canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
+    })
   }
 
   if (mode === 'fill') {
-    canvas.addEventListener('click', (evt) => {
+    const fillHandler = () => {
       ctx.fillStyle = fillColor;
       ctx.fillRect(0, 0, canvas.getAttribute('width'), canvas.getAttribute('height'));
-    })
+      canvas.removeEventListener('click', fillHandler);
+    }
+    canvas.addEventListener('click', fillHandler);
   }
   if (mode === 'color') {
     const colorClickHandler = (evt) => {
