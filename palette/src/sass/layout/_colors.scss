@@ -1,0 +1,70 @@
+.colors {
+  width: 230px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 5px -2px;
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__current {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__control {
+    position: relative;
+    padding: 20px 15px;
+    padding-left: 70px;
+
+    &:nth-child(2) {
+      border-bottom: gray 1px solid;
+    }
+  }
+
+  &__color {
+    position: relative;
+    padding: 20px 15px;
+    padding-left: 70px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid black;
+
+    }
+
+    &--red::before {
+      background-color: red;
+    }
+
+    &--blue::before {
+      background-color: blue;
+    }
+  }
+
+  &__label {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    left: 12px;
+    top: 12px;
+    border-radius: 50%;
+    border: 1px solid black;
+    cursor: pointer;
+
+    &--current {
+      background-color: gray;
+    }
+
+    &--previous {
+      background-color: lightgreen;
+    }
+  }
+}

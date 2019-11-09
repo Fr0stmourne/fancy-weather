@@ -1,0 +1,48 @@
+.controls {
+  width: 230px;
+  box-shadow: 0 2px 5px -2px;
+  margin-bottom: 50px;
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+
+  }
+
+  &__control {
+    position: relative;
+    padding: 20px 15px;
+    padding-left: 70px;
+
+    &:nth-child(2) {
+      border-bottom: gray 1px solid;
+    }
+  }
+
+  &__control-btn {
+    position: absolute;
+    height: 25px;
+    width: 25px;
+    left: 15px;
+    top: 15px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: 0;
+
+    &--paint {
+      background-image: url(../img/icon-share.svg);
+    }
+
+    &--choose {
+      background-image: url(../img/icon-upload.svg);
+    }
+
+    &--move {
+      background-image: url(../img/icon-copy.svg);
+    }
+
+    &--transform {
+      background-image: url(../img/icon-move.svg);
+    }
+  }
+}

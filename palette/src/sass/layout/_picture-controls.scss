@@ -1,0 +1,17 @@
+.picture-controls {
+  box-shadow: 0 2px 5px -2px;
+
+  &__label {
+    display: block;
+    padding: 10px 30px;
+    cursor: pointer;
+
+    .picture-controls__option:not(:last-child) & {
+      border-bottom: 1px solid black;
+    }
+
+    &--active {
+      background-color: rgba(#000, 0.2);
+    }
+  }
+}
