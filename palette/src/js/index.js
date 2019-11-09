@@ -87,9 +87,21 @@ canvas.addEventListener('mousedown', (evt) => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  let dataURL = localStorage.getItem('canvasData');
+  if (dataURL) {
+    let img = new Image;
+    img.src = dataURL;
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0);
+    };
+  }
+})
+
 canvas.addEventListener('mouseup', () => {
   if (mode === 'pencil') {
     canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
+    localStorage.setItem('canvasData', canvas.toDataURL());
   }
 });
 
