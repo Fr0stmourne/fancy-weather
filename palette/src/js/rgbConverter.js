@@ -4,6 +4,7 @@ function componentToHex(c) {
 }
 
 function rgbToHex(str) {
+  if (!str) return null;
   const rgbArr = str.split('(')[1].split(')')[0].split(',');
   return `#${rgbArr.reduce((acc, el) => {
     acc += componentToHex(el.trim());

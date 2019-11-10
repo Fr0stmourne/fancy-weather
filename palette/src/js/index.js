@@ -17,9 +17,12 @@ const controlsList = controls[0].closest('ul');
 const colorInput = document.querySelector('input[type="color"]');
 const colorInputLbl = colorInput.closest('label');
 const prevColorBtn = document.querySelector('.colors__color--previous .colors__color-btn');
+const presetBtns = document.querySelectorAll('.colors__preset button');
+const presetBtnsColors = ['#ff0000', '#0000ff'];
 // const labels = document.querySelectorAll('.picture-controls__label');
 const pixelSize = 16;
 const activeClass = 'controls__control-btn--active';
+const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width'), window.getComputedStyle(canvas).getPropertyValue('height')]
 let mode = 'fill';
 
 
@@ -39,9 +42,20 @@ function getMousePos(evt) {
   };
 }
 
-function updateColor() {
-  fillColor = colorInput.value;
+function updateColorPalette() {
   colorInputLbl.style.backgroundColor = colorInput.value;
+}
+
+function changeColor(newColor, saveAfterChange = true) {
+  [colorInput.value, prevColorBtn.style.backgroundColor] = [newColor, fillColor];
+  fillColor = colorInput.value;
+  updateColorPalette();
+  if (saveAfterChange) saveColorPalette();
+}
+
+function saveColorPalette() {
+  localStorage.setItem('mainColor', fillColor);
+  localStorage.setItem('prevColor', rgbToHex(prevColorBtn.style.backgroundColor));
 }
 
 function line(x0, y0, x1, y1) {
@@ -100,7 +114,39 @@ function saveCanvas() {
 
 function mouseLeaveHandler(e) {
   canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
-  // line(lastCoords.x, lastCoords.y, e.offsetX, e.offsetY);
+
+  function calculateLeaveCoords(event) {
+    // console.log(event.offsetX, event.offsetY);
+
+
+    const leaveCoords = {};
+    if (event.offsetX < canvasWidth && event.offsetX > 0) {
+      leaveCoords.x = event.offsetX;
+    }
+    if (event.offsetX >= canvasWidth) {
+      // console.log('w')
+      leaveCoords.x = canvasWidth - 1;
+    } else {
+      leaveCoords.x = 0;
+    }
+
+    if (event.offsetY < canvasHeight && event.offsetY > 0) {
+      leaveCoords.y = event.offsetY;
+      // console.log('h')
+    }
+    if (event.offsetY >= canvasHeight) {
+      leaveCoords.y = canvasHeight - 1;
+    } else {
+      leaveCoords.y = 0;
+    }
+
+    return leaveCoords;
+  }
+
+  const leaveCoords = calculateLeaveCoords(e);
+
+  // line(lastCoords.x, lastCoords.y, leaveCoords.x, leaveCoords.y);
+  console.log(e.offsetX, e.offsetY);
   lastCoords = {};
   canvas.removeEventListener('mouseleave', mouseLeaveHandler);
 }
@@ -129,7 +175,7 @@ canvas.addEventListener('mousedown', (evt) => {
       const color = ctx.getImageData(getMousePos(e).x, getMousePos(e).y, 1, 1).data.slice(0, 3);
       prevColorBtn.style.backgroundColor = fillColor;
       colorInput.value = rgbToHex(`rgb(${color.join(',')}`);
-      updateColor();
+      updateColorPalette();
       controls[2].click();
       canvas.removeEventListener('click', colorClickHandler);
     };
@@ -173,14 +219,24 @@ document.addEventListener('keydown', (evt) => {
 
 colorInput.addEventListener('change', () => {
   prevColorBtn.style.backgroundColor = fillColor;
-  updateColor();
+  changeColor(colorInput.value);
 });
 
+presetBtns.forEach((btn, index) => {
+  btn.addEventListener('click', () => {
+    changeColor(presetBtnsColors[index]);
+  });
+});
 
-controls[2].click();
-prevColorBtn.style.backgroundColor = '#90ee90';
+function init() {
+  controls[2].click();
+  changeColor(localStorage.getItem('mainColor') || '#000000', false);
+  prevColorBtn.style.backgroundColor = localStorage.getItem('prevColor') || '#90ee90';
+
+}
+init();
 
 prevColorBtn.addEventListener('click', () => {
-  [colorInput.value, prevColorBtn.style.backgroundColor] = [rgbToHex(prevColorBtn.style.backgroundColor), colorInput.value];
-  updateColor();
+  changeColor(rgbToHex(prevColorBtn.style.backgroundColor));
+  updateColorPalette();
 });
