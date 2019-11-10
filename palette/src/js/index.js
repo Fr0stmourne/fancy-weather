@@ -19,22 +19,18 @@ const colorInputLbl = colorInput.closest('label');
 const prevColorBtn = document.querySelector('.colors__color--previous .colors__color-btn');
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
-// const labels = document.querySelectorAll('.picture-controls__label');
 const pixelSize = 32;
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
 const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width').split('px')[0], window.getComputedStyle(canvas).getPropertyValue('height').split('px')[0]];
-let mode = 'pencil';
-
+let mode;
+let fillColor;
+let lastCoords;
 
 function switchMode(newMode) {
   if (newMode === undefined) throw new Error('Unknown app mode.');
   mode = newMode;
 }
-
-let fillColor = colorInput.value;
-canvas.width = 512 / pixelSize;
-canvas.height = 512 / pixelSize;
 
 function getMousePos(evt) {
   return {
@@ -81,7 +77,6 @@ function line(x0, y0, x1, y1) {
   ctx.fillRect(x1, y1, 1, 1);
 }
 
-let lastCoords = {};
 
 function pressedMouseMoveHandler(evt) {
   const {
@@ -117,14 +112,10 @@ function mouseLeaveHandler(e) {
   canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
 
   function calculateLeaveCoords(event) {
-    // console.log(event.offsetX, event.offsetY);
-
-
     const leaveCoords = {};
     if (event.offsetX < canvasWidth && event.offsetX > 0) {
       leaveCoords.x = event.offsetX / pixelSize;
     } else if (event.offsetX >= canvasWidth) {
-      // console.log('w')
       leaveCoords.x = (canvasWidth) / pixelSize;
     } else {
       leaveCoords.x = 0;
@@ -132,7 +123,6 @@ function mouseLeaveHandler(e) {
 
     if (event.offsetY < canvasHeight && event.offsetY > 0) {
       leaveCoords.y = event.offsetY / pixelSize;
-      // console.log('h')
     } else if (event.offsetY >= canvasHeight) {
       leaveCoords.y = (canvasHeight) / pixelSize;
     } else {
@@ -300,19 +290,26 @@ presetBtns.forEach((btn, index) => {
   });
 });
 
-function init() {
-  controls[2].click();
-  changeColor(localStorage.getItem('mainColor') || '#000000', false);
-  prevColorBtn.style.backgroundColor = localStorage.getItem('prevColor') || '#90ee90';
-}
-init();
-
 prevColorBtn.addEventListener('click', () => {
   changeColor(rgbToHex(prevColorBtn.style.backgroundColor));
   updateColorPalette();
 });
 
-
 clearBtn.addEventListener('click', () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#eeeeee';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = fillColor;
 });
+
+function init() {
+  fillColor = colorInput.value;
+  mode = 'pencil';
+  lastCoords = {};
+  canvas.width = canvasWidth / pixelSize;
+  canvas.height = canvasHeight / pixelSize;
+  controls[2].click();
+  changeColor(localStorage.getItem('mainColor') || '#000000', false);
+  prevColorBtn.style.backgroundColor = localStorage.getItem('prevColor') || '#90ee90';
+}
+
+init();
