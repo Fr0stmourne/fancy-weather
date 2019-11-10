@@ -22,7 +22,7 @@ const presetBtnsColors = ['#ff0000', '#0000ff'];
 // const labels = document.querySelectorAll('.picture-controls__label');
 const pixelSize = 16;
 const activeClass = 'controls__control-btn--active';
-const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width'), window.getComputedStyle(canvas).getPropertyValue('height')]
+const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width'), window.getComputedStyle(canvas).getPropertyValue('height')];
 let mode = 'fill';
 
 
@@ -46,16 +46,16 @@ function updateColorPalette() {
   colorInputLbl.style.backgroundColor = colorInput.value;
 }
 
+function saveColorPalette() {
+  localStorage.setItem('mainColor', fillColor);
+  localStorage.setItem('prevColor', rgbToHex(prevColorBtn.style.backgroundColor));
+}
+
 function changeColor(newColor, saveAfterChange = true) {
   [colorInput.value, prevColorBtn.style.backgroundColor] = [newColor, fillColor];
   fillColor = colorInput.value;
   updateColorPalette();
   if (saveAfterChange) saveColorPalette();
-}
-
-function saveColorPalette() {
-  localStorage.setItem('mainColor', fillColor);
-  localStorage.setItem('prevColor', rgbToHex(prevColorBtn.style.backgroundColor));
 }
 
 function line(x0, y0, x1, y1) {
@@ -151,6 +151,11 @@ function mouseLeaveHandler(e) {
   canvas.removeEventListener('mouseleave', mouseLeaveHandler);
 }
 
+function getPixelHexColor(pixelPos) {
+  const color = ctx.getImageData(pixelPos.x, pixelPos.y, 1, 1).data.slice(0, 3);
+  return rgbToHex(`rgb(${color.join(',')}`);
+}
+
 canvas.addEventListener('mousedown', (evt) => {
   if (mode === 'pencil') {
     canvas.addEventListener('mousemove', pressedMouseMoveHandler);
@@ -162,9 +167,10 @@ canvas.addEventListener('mousedown', (evt) => {
   }
 
   if (mode === 'fill') {
-    const fillHandler = () => {
+    const fillHandler = (e) => {
       ctx.fillStyle = fillColor;
-      ctx.fillRect(0, 0, canvas.getAttribute('width'), canvas.getAttribute('height'));
+      // ctx.fillRect(0, 0, canvas.getAttribute('width'), canvas.getAttribute('height'));
+      floodFill(getMousePos(e).x, getMousePos(e).y);
       canvas.removeEventListener('click', fillHandler);
       saveCanvas();
     };
@@ -172,10 +178,8 @@ canvas.addEventListener('mousedown', (evt) => {
   }
   if (mode === 'color') {
     const colorClickHandler = (e) => {
-      const color = ctx.getImageData(getMousePos(e).x, getMousePos(e).y, 1, 1).data.slice(0, 3);
-      prevColorBtn.style.backgroundColor = fillColor;
-      colorInput.value = rgbToHex(`rgb(${color.join(',')}`);
-      updateColorPalette();
+      const colorHex = getPixelHexColor(getMousePos(e));
+      changeColor(colorHex);
       controls[2].click();
       canvas.removeEventListener('click', colorClickHandler);
     };
@@ -232,7 +236,6 @@ function init() {
   controls[2].click();
   changeColor(localStorage.getItem('mainColor') || '#000000', false);
   prevColorBtn.style.backgroundColor = localStorage.getItem('prevColor') || '#90ee90';
-
 }
 init();
 
@@ -240,3 +243,78 @@ prevColorBtn.addEventListener('click', () => {
   changeColor(rgbToHex(prevColorBtn.style.backgroundColor));
   updateColorPalette();
 });
+
+let pixelStack;
+
+function floodFill(startX, startY) {
+  debugger;
+  let startColor = getPixelHexColor({
+    x: startX,
+    y: startY
+  });
+  console.log(startX, startY, startColor);
+  pixelStack = [
+    [startX, startY]
+  ];
+
+  while (pixelStack.length) {
+    let newPos;
+    let x;
+    let y;
+    let pixelPos;
+    let reachLeft;
+    let reachRight;
+    newPos = pixelStack.pop();
+    [x, y] = newPos;
+    pixelPos = {
+      x,
+      y,
+    };
+
+    while (pixelPos.y >= 0 && matchStartColor(pixelPos)) {
+      pixelPos.y -= 1;
+    }
+    pixelPos.y += 1;
+    reachLeft = false;
+    reachRight = false;
+    while (pixelPos.y < (canvas.height) && matchStartColor(pixelPos)) {
+      ctx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
+
+      if (pixelPos.x > 0) {
+        if (matchStartColor({
+            x: pixelPos.x - 1,
+            y: pixelPos.y,
+          })) {
+          if (!reachLeft) {
+            pixelStack.push([pixelPos.x - 1, pixelPos.y]);
+            reachLeft = true;
+          }
+        } else if (reachLeft) {
+          reachLeft = false;
+        }
+      }
+
+      if (pixelPos.x < canvas.width) {
+        if (matchStartColor({
+            x: pixelPos.x + 1,
+            y: pixelPos.y,
+          })) {
+          if (!reachRight) {
+            pixelStack.push([pixelPos.x + 1, pixelPos.y]);
+            reachRight = true;
+          }
+        } else if (reachRight) {
+          reachRight = false;
+        }
+      }
+
+      pixelPos.y += 1;
+    }
+  }
+
+  function matchStartColor(pixelPos) {
+    const currentPixelColor = getPixelHexColor(pixelPos);
+    console.log(currentPixelColor === startColor);
+    return currentPixelColor === startColor;
+  }
+}
