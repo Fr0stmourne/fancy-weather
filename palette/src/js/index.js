@@ -20,10 +20,11 @@ const prevColorBtn = document.querySelector('.colors__color--previous .colors__c
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
 // const labels = document.querySelectorAll('.picture-controls__label');
-const pixelSize = 16;
+const pixelSize = 32;
+const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
-const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width'), window.getComputedStyle(canvas).getPropertyValue('height')];
-let mode = 'fill';
+const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width').split('px')[0], window.getComputedStyle(canvas).getPropertyValue('height').split('px')[0]];
+let mode = "pencil";
 
 
 function switchMode(newMode) {
@@ -121,33 +122,34 @@ function mouseLeaveHandler(e) {
 
     const leaveCoords = {};
     if (event.offsetX < canvasWidth && event.offsetX > 0) {
-      leaveCoords.x = event.offsetX;
-    }
-    if (event.offsetX >= canvasWidth) {
+      leaveCoords.x = event.offsetX / pixelSize;
+    } else if (event.offsetX >= canvasWidth) {
       // console.log('w')
-      leaveCoords.x = canvasWidth - 1;
+      leaveCoords.x = (canvasWidth) / pixelSize;
     } else {
       leaveCoords.x = 0;
     }
 
     if (event.offsetY < canvasHeight && event.offsetY > 0) {
-      leaveCoords.y = event.offsetY;
+      leaveCoords.y = event.offsetY / pixelSize;
       // console.log('h')
-    }
-    if (event.offsetY >= canvasHeight) {
-      leaveCoords.y = canvasHeight - 1;
+    } else if (event.offsetY >= canvasHeight) {
+      leaveCoords.y = (canvasHeight) / pixelSize;
     } else {
       leaveCoords.y = 0;
     }
+
+    leaveCoords.x = Math.floor(leaveCoords.x);
+    leaveCoords.y = Math.floor(leaveCoords.y);
 
     return leaveCoords;
   }
 
   const leaveCoords = calculateLeaveCoords(e);
 
-  // line(lastCoords.x, lastCoords.y, leaveCoords.x, leaveCoords.y);
-  console.log(e.offsetX, e.offsetY);
+  line(lastCoords.x, lastCoords.y, leaveCoords.x, leaveCoords.y);
   lastCoords = {};
+  saveCanvas();
   canvas.removeEventListener('mouseleave', mouseLeaveHandler);
 }
 
@@ -169,7 +171,6 @@ canvas.addEventListener('mousedown', (evt) => {
   if (mode === 'fill') {
     const fillHandler = (e) => {
       ctx.fillStyle = fillColor;
-      // ctx.fillRect(0, 0, canvas.getAttribute('width'), canvas.getAttribute('height'));
       floodFill(getMousePos(e).x, getMousePos(e).y);
       canvas.removeEventListener('click', fillHandler);
       saveCanvas();
@@ -252,7 +253,6 @@ function floodFill(startX, startY) {
     x: startX,
     y: startY
   });
-  console.log(startX, startY, startColor);
   pixelStack = [
     [startX, startY]
   ];
