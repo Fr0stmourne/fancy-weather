@@ -1,3 +1,5 @@
+import rgbToHex from './rgbConverter';
+
 const controlMode = new Map([
   [0, 'fill'],
   [1, 'color'],
@@ -16,7 +18,7 @@ const colorInput = document.querySelector('input[type="color"]');
 const colorInputLbl = colorInput.closest('label');
 const prevColorBtn = document.querySelector('.colors__color--previous .colors__color-btn');
 // const labels = document.querySelectorAll('.picture-controls__label');
-const pixelSize = 4;
+const pixelSize = 16;
 const activeClass = 'controls__control-btn--active';
 let mode = 'fill';
 
@@ -25,9 +27,6 @@ function switchMode(newMode) {
   if (newMode === undefined) throw new Error('Unknown app mode.');
   mode = newMode;
 }
-
-const prevColor = 'lightgreen';
-let lastColor;
 
 let fillColor = colorInput.value;
 canvas.width = 512 / pixelSize;
@@ -40,6 +39,11 @@ function getMousePos(evt) {
   };
 }
 
+function updateColor() {
+  fillColor = colorInput.value;
+  colorInputLbl.style.backgroundColor = colorInput.value;
+}
+
 function line(x0, y0, x1, y1) {
   const dx = Math.abs(x1 - x0);
   const sx = x0 < x1 ? 1 : -1;
@@ -47,9 +51,8 @@ function line(x0, y0, x1, y1) {
   const sy = y0 < y1 ? 1 : -1;
   let err = (dx > dy ? dx : -dy) / 2;
 
-  while (true) {
+  while (!(x0 === x1 && y0 === y1)) {
     ctx.fillRect(x0, y0, 1, 1);
-    if (x0 === x1 && y0 === y1) break;
     const e2 = err;
     if (e2 > -dx) {
       err -= dy;
@@ -60,6 +63,7 @@ function line(x0, y0, x1, y1) {
       y0 += sy;
     }
   }
+  ctx.fillRect(x1, y1, 1, 1);
 }
 
 let lastCoords = {};
@@ -90,6 +94,17 @@ function updateControls(e, evtCode) {
   }
 }
 
+function saveCanvas() {
+  localStorage.setItem('canvasData', canvas.toDataURL());
+}
+
+function mouseLeaveHandler(e) {
+  canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
+  // line(lastCoords.x, lastCoords.y, e.offsetX, e.offsetY);
+  lastCoords = {};
+  canvas.removeEventListener('mouseleave', mouseLeaveHandler);
+}
+
 canvas.addEventListener('mousedown', (evt) => {
   if (mode === 'pencil') {
     canvas.addEventListener('mousemove', pressedMouseMoveHandler);
@@ -97,11 +112,7 @@ canvas.addEventListener('mousedown', (evt) => {
     ctx.fillStyle = fillColor;
     ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
 
-    canvas.addEventListener('mouseleave', (e) => {
-      canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
-      // line(lastCoords.x, lastCoords.y, e.offsetX, e.offsetY);
-      lastCoords = {};
-    });
+    canvas.addEventListener('mouseleave', mouseLeaveHandler);
   }
 
   if (mode === 'fill') {
@@ -109,12 +120,13 @@ canvas.addEventListener('mousedown', (evt) => {
       ctx.fillStyle = fillColor;
       ctx.fillRect(0, 0, canvas.getAttribute('width'), canvas.getAttribute('height'));
       canvas.removeEventListener('click', fillHandler);
+      saveCanvas();
     };
     canvas.addEventListener('click', fillHandler);
   }
   if (mode === 'color') {
-    const colorClickHandler = (evt) => {
-      const color = ctx.getImageData(getMousePos(evt).x, getMousePos(evt).y, 1, 1).data.slice(0, 3);
+    const colorClickHandler = (e) => {
+      const color = ctx.getImageData(getMousePos(e).x, getMousePos(e).y, 1, 1).data.slice(0, 3);
       prevColorBtn.style.backgroundColor = fillColor;
       colorInput.value = rgbToHex(`rgb(${color.join(',')}`);
       updateColor();
@@ -139,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 canvas.addEventListener('mouseup', () => {
   if (mode === 'pencil') {
     canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
-    localStorage.setItem('canvasData', canvas.toDataURL());
+    saveCanvas();
     lastCoords = {};
   }
 });
@@ -147,7 +159,7 @@ canvas.addEventListener('mouseup', () => {
 controlsList.addEventListener('click', (e) => updateControls(e));
 
 controls.forEach((control, index) => {
-  control.addEventListener('click', (e) => {
+  control.addEventListener('click', () => {
     switchMode(controlMode.get(index));
   });
 });
@@ -159,25 +171,11 @@ document.addEventListener('keydown', (evt) => {
 });
 
 
-colorInput.addEventListener('change', (e) => {
+colorInput.addEventListener('change', () => {
   prevColorBtn.style.backgroundColor = fillColor;
   updateColor();
 });
 
-function componentToHex(c) {
-  const hex = (+c).toString(16);
-  return hex.length == 1 ? `0${hex}` : hex;
-}
-
-function rgbToHex(str) {
-  const rgbArr = str.split('(')[1].split(')')[0].split(',');
-  return `#${rgbArr.reduce((acc, el) => acc += componentToHex(el.trim()), '')}`;
-}
-
-function updateColor() {
-  fillColor = colorInput.value;
-  colorInputLbl.style.backgroundColor = colorInput.value;
-}
 
 controls[2].click();
 prevColorBtn.style.backgroundColor = '#90ee90';
