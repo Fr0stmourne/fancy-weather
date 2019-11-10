@@ -24,7 +24,7 @@ const pixelSize = 32;
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
 const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width').split('px')[0], window.getComputedStyle(canvas).getPropertyValue('height').split('px')[0]];
-let mode = "pencil";
+let mode = 'pencil';
 
 
 function switchMode(newMode) {
@@ -158,6 +158,73 @@ function getPixelHexColor(pixelPos) {
   return rgbToHex(`rgb(${color.join(',')}`);
 }
 
+function floodFill(startX, startY) {
+  const startColor = getPixelHexColor({
+    x: startX,
+    y: startY,
+  });
+
+  function matchStartColor(pixelPos) {
+    const currentPixelColor = getPixelHexColor(pixelPos);
+    return currentPixelColor === startColor;
+  }
+
+  const pixelStack = [
+    [startX, startY],
+  ];
+
+
+  while (pixelStack.length) {
+    let reachLeft;
+    let reachRight;
+    const newPos = pixelStack.pop();
+    const pixelPos = {
+      x: newPos[0],
+      y: newPos[1],
+    };
+
+    while (pixelPos.y >= 0 && matchStartColor(pixelPos)) {
+      pixelPos.y -= 1;
+    }
+    pixelPos.y += 1;
+    reachLeft = false;
+    reachRight = false;
+    while (pixelPos.y < (canvas.height) && matchStartColor(pixelPos)) {
+      ctx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
+
+      if (pixelPos.x > 0) {
+        if (matchStartColor({
+          x: pixelPos.x - 1,
+          y: pixelPos.y,
+        })) {
+          if (!reachLeft) {
+            pixelStack.push([pixelPos.x - 1, pixelPos.y]);
+            reachLeft = true;
+          }
+        } else if (reachLeft) {
+          reachLeft = false;
+        }
+      }
+
+      if (pixelPos.x < canvas.width) {
+        if (matchStartColor({
+          x: pixelPos.x + 1,
+          y: pixelPos.y,
+        })) {
+          if (!reachRight) {
+            pixelStack.push([pixelPos.x + 1, pixelPos.y]);
+            reachRight = true;
+          }
+        } else if (reachRight) {
+          reachRight = false;
+        }
+      }
+
+      pixelPos.y += 1;
+    }
+  }
+}
+
 canvas.addEventListener('mousedown', (evt) => {
   if (mode === 'pencil') {
     canvas.addEventListener('mousemove', pressedMouseMoveHandler);
@@ -245,76 +312,7 @@ prevColorBtn.addEventListener('click', () => {
   updateColorPalette();
 });
 
-let pixelStack;
 
-function floodFill(startX, startY) {
-  debugger;
-  let startColor = getPixelHexColor({
-    x: startX,
-    y: startY
-  });
-  pixelStack = [
-    [startX, startY]
-  ];
-
-  while (pixelStack.length) {
-    let newPos;
-    let x;
-    let y;
-    let pixelPos;
-    let reachLeft;
-    let reachRight;
-    newPos = pixelStack.pop();
-    [x, y] = newPos;
-    pixelPos = {
-      x,
-      y,
-    };
-
-    while (pixelPos.y >= 0 && matchStartColor(pixelPos)) {
-      pixelPos.y -= 1;
-    }
-    pixelPos.y += 1;
-    reachLeft = false;
-    reachRight = false;
-    while (pixelPos.y < (canvas.height) && matchStartColor(pixelPos)) {
-      ctx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
-
-      if (pixelPos.x > 0) {
-        if (matchStartColor({
-            x: pixelPos.x - 1,
-            y: pixelPos.y,
-          })) {
-          if (!reachLeft) {
-            pixelStack.push([pixelPos.x - 1, pixelPos.y]);
-            reachLeft = true;
-          }
-        } else if (reachLeft) {
-          reachLeft = false;
-        }
-      }
-
-      if (pixelPos.x < canvas.width) {
-        if (matchStartColor({
-            x: pixelPos.x + 1,
-            y: pixelPos.y,
-          })) {
-          if (!reachRight) {
-            pixelStack.push([pixelPos.x + 1, pixelPos.y]);
-            reachRight = true;
-          }
-        } else if (reachRight) {
-          reachRight = false;
-        }
-      }
-
-      pixelPos.y += 1;
-    }
-  }
-
-  function matchStartColor(pixelPos) {
-    const currentPixelColor = getPixelHexColor(pixelPos);
-    console.log(currentPixelColor === startColor);
-    return currentPixelColor === startColor;
-  }
-}
+clearBtn.addEventListener('click', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
