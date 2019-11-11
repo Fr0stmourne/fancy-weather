@@ -49,6 +49,7 @@ function saveColorPalette() {
 }
 
 function changeColor(newColor, saveAfterChange = true) {
+  if (newColor === fillColor) return;
   [colorInput.value, prevColorBtn.style.backgroundColor] = [newColor, fillColor];
   fillColor = colorInput.value;
   updateColorPalette();
