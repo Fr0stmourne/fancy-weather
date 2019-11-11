@@ -14,4 +14,12 @@
       background-color: rgba(#000, 0.2);
     }
   }
+
+  &__clear-btn {
+    width: 100%;
+    padding: 10px 30px;
+    background-color: transparent;
+    border: 0;
+    text-align: left;
+  }
 }

@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
 canvas.addEventListener('mouseup', () => {
   if (mode === 'pencil') {
     canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
+    canvas.removeEventListener('mouseleave', mouseLeaveHandler);
     saveCanvas();
     lastCoords = {};
   }
