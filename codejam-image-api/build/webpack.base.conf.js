@@ -34,6 +34,23 @@ module.exports = {
       options: {
         name: '[name].[ext]',
       },
+    },
+    {
+      test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+      loader: 'file-loader',
+      options: {
+        name: '[name].[ext]',
+      },
+    }, {
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: { sourceMap: true },
+        },
+      ],
     }, {
       test: /\.scss$/,
       use: [
@@ -59,26 +76,6 @@ module.exports = {
           },
         },
       ],
-    }, {
-      test: /\.css$/,
-      use: [
-        'style-loader',
-        MiniCssExtractPlugin.loader,
-        {
-          loader: 'css-loader',
-          options: {
-            sourceMap: true,
-          },
-        }, {
-          loader: 'postcss-loader',
-          options: {
-            sourceMap: true,
-            config: {
-              path: `${PATHS.src}/js/postcss.config.js`,
-            },
-          },
-        },
-      ],
     }],
   },
   plugins: [
@@ -94,9 +91,10 @@ module.exports = {
       from: `${PATHS.src}/img`,
       to: `${PATHS.assets}img`,
     },
-    {
-      from: `${PATHS.src}/static`,
-      to: '',
+    ]),
+    new CopyWebpackPlugin([{
+      from: `${PATHS.src}/fonts`,
+      to: `${PATHS.assets}fonts`,
     },
     ]),
     new ImageminPlugin({

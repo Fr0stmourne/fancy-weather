@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack-dev-server --open --config ./build/webpack.dev.conf.js",
     "build": "webpack --config ./build/webpack.build.conf.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "test": "jest"
   },
   "browserslist": [
     "> 1%",
@@ -17,7 +18,9 @@
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
+    "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.4",
+    "chai": "^4.2.0",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.1.0",
     "eslint": "^6.6.0",
@@ -30,7 +33,10 @@
     "imagemin-jpegtran": "^6.0.0",
     "imagemin-optipng": "^7.1.0",
     "imagemin-svgo": "^7.0.0",
+    "imagemin-webpack": "^5.1.0",
+    "jest": "^24.9.0",
     "mini-css-extract-plugin": "^0.5.0",
+    "mocha": "^6.2.2",
     "node-sass": "^4.11.0",
     "path": "^0.12.7",
     "postcss-loader": "^3.0.0",
@@ -43,7 +49,10 @@
   },
   "dependencies": {
     "autoprefixer": "^9.4.4",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "css-mqpacker": "^7.0.0",
-    "cssnano": "^4.1.8"
+    "cssnano": "^4.1.8",
+    "mocha-webpack": "^1.1.0",
+    "normalize.css": "^8.0.1"
   }
 }
