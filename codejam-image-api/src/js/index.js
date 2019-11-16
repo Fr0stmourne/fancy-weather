@@ -26,7 +26,8 @@ const pixelSize = 1;
 const ACCESS_KEY = '79060e7faaa2c684952c28824dc484ca9ce148b44f17f43a75f5137def261120';
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
-const loadBtn = document.querySelector('#load');
+const townInput = document.querySelector('#town-input');
+const townBtn = document.querySelector('#town-search');
 const [canvasWidth, canvasHeight] = [
   window
     .getComputedStyle(canvas)
@@ -324,6 +325,20 @@ const frame = {
   height: canvasHeight,
 };
 
+// function drawLoadedImg(link, imgWidth, imgHeight) {
+//   console.log(link, imgWidth);
+//   const img = new Image();
+//   img.src = link;
+//   img.crossOrigin = 'anonymous';
+//   const { width: resizedWidth, height: resizedHeight } = resize(frame,
+//     { width: imgWidth.width, height: imgHeight.height });
+//   img.onload = () => {
+//     ctx.drawImage(img, (canvasWidth - resizedWidth) / 2, (canvasHeight - resizedHeight) / 2,
+//       resizedWidth / pixelSize, resizedHeight / pixelSize);
+//     console.log('drew smth');
+//   };
+// }
+
 function drawLoadedImg(response) {
   const img = new Image();
   img.src = response.urls.small;
@@ -333,18 +348,24 @@ function drawLoadedImg(response) {
   img.onload = () => {
     ctx.drawImage(img, (canvasWidth - resizedWidth) / 2, (canvasHeight - resizedHeight) / 2,
       resizedWidth / pixelSize, resizedHeight / pixelSize);
+    saveCanvas();
   };
 }
 
+async function makeQuery(town = 'st-petersburg') {
+  const apiData = await fetch(
+    `https://api.unsplash.com/photos/random?query=town,${town}&client_id=${ACCESS_KEY}`,
+  );
+  return apiData.json();
+}
 
-loadBtn.addEventListener('click', () => {
-  fetch(
-    `https://api.unsplash.com/photos/random?query=town,Minsk&client_id=${ACCESS_KEY}`,
-  ).then((response) => response.json())
-    .then((data) => {
-      drawLoadedImg(data);
-    });
-});
+async function loadHandler() {
+  const json = await makeQuery(townInput.value);
+  clearBtn.click();
+  drawLoadedImg(json);
+}
+
+townBtn.addEventListener('click', loadHandler);
 
 function init() {
   fillColor = colorInput.value;
