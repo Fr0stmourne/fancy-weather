@@ -1,4 +1,5 @@
 import rgbToHex from './rgbConverter';
+import resize from './resize';
 
 const controlMode = new Map([
   [0, 'fill'],
@@ -318,22 +319,28 @@ clearBtn.addEventListener('click', () => {
   ctx.fillStyle = fillColor;
 });
 
+const frame = {
+  width: canvasWidth,
+  height: canvasHeight,
+};
+
 function drawLoadedImg(response) {
   const img = new Image();
-  console.log(response.urls.small);
   img.src = response.urls.small;
   img.crossOrigin = 'anonymous';
+  const { width: resizedWidth, height: resizedHeight } = resize(frame,
+    { width: response.width, height: response.height });
   img.onload = () => {
-    ctx.drawImage(img, 0, 0, canvasWidth / pixelSize, canvasHeight / pixelSize);
+    ctx.drawImage(img, (canvasWidth - resizedWidth) / 2, (canvasHeight - resizedHeight) / 2,
+      resizedWidth / pixelSize, resizedHeight / pixelSize);
   };
 }
+
 
 loadBtn.addEventListener('click', () => {
   fetch(
     `https://api.unsplash.com/photos/random?query=town,Minsk&client_id=${ACCESS_KEY}`,
-  )
-    .then((response) => response.json())
-    // .then((resp) => console.log(resp))
+  ).then((response) => response.json())
     .then((data) => {
       drawLoadedImg(data);
     });
