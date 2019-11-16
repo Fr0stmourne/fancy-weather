@@ -99,7 +99,6 @@ module.exports = {
     ]),
     new ImageminPlugin({
       bail: false, // Ignore errors on corrupted images
-      cache: true,
       imageminOptions: {
         plugins: [
           ['gifsicle', {

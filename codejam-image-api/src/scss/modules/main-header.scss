@@ -1,0 +1,41 @@
+.main-header {
+  border-bottom: 2px solid rgba(black, $alpha: 0.5);
+  box-shadow: 0 0 5px 1px rgba(black, $alpha: 0.5);
+  margin-bottom: 70px;
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__menu-btn {
+    margin: auto 0;
+    width: 30px;
+    height: 30px;
+    background-repeat: no-repeat;
+    background-image: url(../img/menu.svg);
+    background-position: center;
+    padding-left: 0;
+    margin-right: 30px;
+  }
+
+  &__extra-btn {
+    margin: auto 0;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../img/menu-icon.svg);
+  }
+
+  &__wrapper {
+    display: flex;
+  }
+
+  &__title {
+    font-size: 30px;
+    margin: 10px 0;
+  }
+
+}
