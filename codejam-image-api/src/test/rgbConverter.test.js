@@ -1,4 +1,4 @@
-import rgbToHex from './rgbConverter';
+import rgbToHex from '../js/rgbConverter';
 
 test('rgbToHex test', () => {
   expect(rgbToHex('rgb(255,255,255)')).toBe('#ffffff');

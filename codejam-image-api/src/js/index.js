@@ -16,13 +16,26 @@ const controls = document.querySelectorAll('.controls__control-btn');
 const controlsList = controls[0].closest('ul');
 const colorInput = document.querySelector('input[type="color"]');
 const colorInputLbl = colorInput.closest('label');
-const prevColorBtn = document.querySelector('.colors__color--previous .colors__color-btn');
+const prevColorBtn = document.querySelector(
+  '.colors__color--previous .colors__color-btn',
+);
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
-const pixelSize = 32;
+const pixelSize = 1;
+const ACCESS_KEY = '79060e7faaa2c684952c28824dc484ca9ce148b44f17f43a75f5137def261120';
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
-const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width').split('px')[0], window.getComputedStyle(canvas).getPropertyValue('height').split('px')[0]];
+const loadBtn = document.querySelector('#load');
+const [canvasWidth, canvasHeight] = [
+  window
+    .getComputedStyle(canvas)
+    .getPropertyValue('width')
+    .split('px')[0],
+  window
+    .getComputedStyle(canvas)
+    .getPropertyValue('height')
+    .split('px')[0],
+];
 let mode;
 let fillColor;
 let lastCoords;
@@ -45,12 +58,18 @@ function updateColorPalette() {
 
 function saveColorPalette() {
   localStorage.setItem('mainColor', fillColor);
-  localStorage.setItem('prevColor', rgbToHex(prevColorBtn.style.backgroundColor));
+  localStorage.setItem(
+    'prevColor',
+    rgbToHex(prevColorBtn.style.backgroundColor),
+  );
 }
 
 function changeColor(newColor, saveAfterChange = true) {
   if (newColor === fillColor) return;
-  [colorInput.value, prevColorBtn.style.backgroundColor] = [newColor, fillColor];
+  [colorInput.value, prevColorBtn.style.backgroundColor] = [
+    newColor,
+    fillColor,
+  ];
   fillColor = colorInput.value;
   updateColorPalette();
   if (saveAfterChange) saveColorPalette();
@@ -79,20 +98,18 @@ function line(x0, y0, x1, y1) {
 }
 
 function pressedMouseMoveHandler(evt) {
-  const {
-    x,
-    y,
-  } = getMousePos(evt);
-  lastCoords = lastCoords.x ? lastCoords : {
-    x,
-    y,
-  };
+  const { x, y } = getMousePos(evt);
+  lastCoords = lastCoords.x
+    ? lastCoords
+    : {
+      x,
+      y,
+    };
   ctx.fillStyle = fillColor;
   line(lastCoords.x, lastCoords.y, x, y);
   lastCoords.x = x;
   lastCoords.y = y;
 }
-
 
 function updateControls(e, evtCode) {
   controls.forEach((el) => el.classList.remove(activeClass));
@@ -116,7 +133,7 @@ function mouseLeaveHandler(e) {
     if (event.offsetX < canvasWidth && event.offsetX > 0) {
       leaveCoords.x = event.offsetX / pixelSize;
     } else if (event.offsetX >= canvasWidth) {
-      leaveCoords.x = (canvasWidth) / pixelSize;
+      leaveCoords.x = canvasWidth / pixelSize;
     } else {
       leaveCoords.x = 0;
     }
@@ -124,7 +141,7 @@ function mouseLeaveHandler(e) {
     if (event.offsetY < canvasHeight && event.offsetY > 0) {
       leaveCoords.y = event.offsetY / pixelSize;
     } else if (event.offsetY >= canvasHeight) {
-      leaveCoords.y = (canvasHeight) / pixelSize;
+      leaveCoords.y = canvasHeight / pixelSize;
     } else {
       leaveCoords.y = 0;
     }
@@ -159,10 +176,7 @@ function floodFill(startX, startY) {
     return currentPixelColor === startColor;
   }
 
-  const pixelStack = [
-    [startX, startY],
-  ];
-
+  const pixelStack = [[startX, startY]];
 
   while (pixelStack.length) {
     let reachLeft;
@@ -179,14 +193,16 @@ function floodFill(startX, startY) {
     pixelPos.y += 1;
     reachLeft = false;
     reachRight = false;
-    while (pixelPos.y < (canvas.height) && matchStartColor(pixelPos)) {
+    while (pixelPos.y < canvas.height && matchStartColor(pixelPos)) {
       ctx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
 
       if (pixelPos.x > 0) {
-        if (matchStartColor({
-          x: pixelPos.x - 1,
-          y: pixelPos.y,
-        })) {
+        if (
+          matchStartColor({
+            x: pixelPos.x - 1,
+            y: pixelPos.y,
+          })
+        ) {
           if (!reachLeft) {
             pixelStack.push([pixelPos.x - 1, pixelPos.y]);
             reachLeft = true;
@@ -197,10 +213,12 @@ function floodFill(startX, startY) {
       }
 
       if (pixelPos.x < canvas.width) {
-        if (matchStartColor({
-          x: pixelPos.x + 1,
-          y: pixelPos.y,
-        })) {
+        if (
+          matchStartColor({
+            x: pixelPos.x + 1,
+            y: pixelPos.y,
+          })
+        ) {
           if (!reachRight) {
             pixelStack.push([pixelPos.x + 1, pixelPos.y]);
             reachRight = true;
@@ -273,12 +291,10 @@ controls.forEach((control, index) => {
   });
 });
 
-
 document.addEventListener('keydown', (evt) => {
   switchMode(hotkeyBindings[evt.code]);
   updateControls(evt, evt.code);
 });
-
 
 colorInput.addEventListener('change', () => {
   prevColorBtn.style.backgroundColor = fillColor;
@@ -302,12 +318,34 @@ clearBtn.addEventListener('click', () => {
   ctx.fillStyle = fillColor;
 });
 
+function drawLoadedImg(response) {
+  const img = new Image();
+  console.log(response.urls.small);
+  img.src = response.urls.small;
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, canvasWidth / pixelSize, canvasHeight / pixelSize);
+  };
+}
+
+loadBtn.addEventListener('click', () => {
+  fetch(
+    `https://api.unsplash.com/photos/random?query=town,Minsk&client_id=${ACCESS_KEY}`,
+  )
+    .then((response) => response.json())
+    // .then((resp) => console.log(resp))
+    .then((data) => {
+      drawLoadedImg(data);
+    });
+});
+
 function init() {
   fillColor = colorInput.value;
   mode = 'pencil';
   lastCoords = {};
   canvas.width = canvasWidth / pixelSize;
   canvas.height = canvasHeight / pixelSize;
+  ctx.imageSmoothingEnabled = false;
   controls[2].click();
   changeColor(localStorage.getItem('mainColor') || '#000000', false);
   prevColorBtn.style.backgroundColor = localStorage.getItem('prevColor') || '#90ee90';
