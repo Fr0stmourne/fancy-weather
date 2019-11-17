@@ -22,7 +22,7 @@ const prevColorBtn = document.querySelector(
 );
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
-let pixelSize = 1;
+let pixelSize;
 const ACCESS_KEY = '79060e7faaa2c684952c28824dc484ca9ce148b44f17f43a75f5137def261120';
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
@@ -40,6 +40,7 @@ const [canvasWidth, canvasHeight] = [
     .getPropertyValue('height')
     .split('px')[0],
 ];
+let isGrayscaleAvailable = false;
 let mode;
 let fillColor;
 let lastCoords;
@@ -47,6 +48,7 @@ let lastCoords;
 function switchMode(newMode) {
   if (newMode === undefined) throw new Error('Unknown app mode.');
   mode = newMode;
+  localStorage.setItem('tool', mode);
 }
 
 function getMousePos(evt) {
@@ -99,9 +101,11 @@ function line(x0, y0, x1, y1) {
     }
   }
   ctx.fillRect(x1, y1, 1, 1);
+  console.log('drawing');
 }
 
 function pressedMouseMoveHandler(evt) {
+  console.log('moving');
   const { x, y } = getMousePos(evt);
   lastCoords = lastCoords.x
     ? lastCoords
@@ -332,7 +336,6 @@ function drawImg(link, width, height, onChange) {
     { width, height });
   return new Promise((resolve, reject) => {
     img.onload = () => {
-      console.log(resizedWidth, resizedHeight);
       if (onChange) {
         ctx.drawImage(img, 0,
           0, canvas.width, canvas.height);
@@ -340,28 +343,14 @@ function drawImg(link, width, height, onChange) {
         ctx.drawImage(img, (canvas.width - resizedWidth) / 2,
           (canvas.height - resizedHeight) / 2,
           resizedWidth, resizedHeight);
-        // ctx.drawImage(img, 0,
-        //   0, resizedWidth, resizedHeight);
       }
+      isGrayscaleAvailable = true;
       resolve({ done: true });
     };
     img.onerror = reject;
     img.src = link;
   });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const dataURL = localStorage.getItem('canvasData');
-  if (dataURL) { // create function
-    const img = new Image();
-    img.onload = () => {
-      // ctx.drawImage(img, 0, 0);
-      console.log('img.width', img.width, 'img.height', img.height);
-      drawImg(img.src, img.width, img.height);
-    };
-    img.src = dataURL;
-  }
-});
 
 async function makeQuery(town = 'st-petersburg') {
   const apiData = await fetch(
@@ -370,31 +359,34 @@ async function makeQuery(town = 'st-petersburg') {
   return apiData.json();
 }
 
-function log(width, height) {
-  console.log(`drawing on canvas.width ${canvas.width} canvas.height ${canvas.height} and size: width ${width}, height ${height}`);
+function changeHandler() {
+  pixelSize = sizeSelect.value;
+  localStorage.setItem('pixelSize', pixelSize);
+  updateSize(pixelSize);
+  const imgJson = JSON.parse(localStorage.getItem('imgData'));
+  const dataURL = localStorage.getItem('canvasData');
+  drawImg(dataURL, imgJson.width, imgJson.height, true);
 }
 
 async function loadHandler() {
   const json = await makeQuery(townInput.value);
   clearBtn.click();
-  log(json.width, json.height);
+  const prevSize = sizeSelect.value;
+  sizeSelect.value = 1;
+  pixelSize = 1;
   localStorage.setItem('imgData', JSON.stringify(json));
   await drawImg(json.urls.regular, json.width, json.height);
   saveCanvas();
+
+  sizeSelect.value = prevSize;
+  pixelSize = prevSize;
+
+  const changeEvt = new Event('change');
+  sizeSelect.dispatchEvent(changeEvt);
 }
 
 townBtn.addEventListener('click', loadHandler);
-
-sizeSelect.addEventListener('change', () => {
-  console.log(sizeSelect.value);
-  pixelSize = sizeSelect.value;
-  updateSize(pixelSize);
-  const imgJson = JSON.parse(localStorage.getItem('imgData'));
-  const dataURL = localStorage.getItem('canvasData');
-  log(imgJson.width, imgJson.height);
-  drawImg(dataURL, imgJson.width, imgJson.height, true);
-});
-
+sizeSelect.addEventListener('change', changeHandler);
 
 grayscaleBtn.addEventListener('click', () => {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -409,19 +401,45 @@ grayscaleBtn.addEventListener('click', () => {
     ctx.putImageData(imageData, 0, 0);
   }
 
-  grayscale();
+  if (isGrayscaleAvailable) {
+    grayscale();
+    saveCanvas();
+  } else {
+    alert('Error: an image is not loaded!');
+  }
 });
+
 
 function init() {
   fillColor = colorInput.value;
-  mode = 'pencil';
+  mode = localStorage.getItem('tool') || 'pencil';
+  console.log(mode);
   lastCoords = {};
   canvas.width = canvasWidth / pixelSize;
   canvas.height = canvasHeight / pixelSize;
-  ctx.imageSmoothingEnabled = false;
-  controls[2].click();
+  // ctx.imageSmoothingEnabled = false;
+  let currentControl;
+  controlMode.forEach((val, key) => {
+    if (val === mode) currentControl = key;
+  });
+  controls[currentControl].click();
   changeColor(localStorage.getItem('mainColor') || '#000000', false);
+  pixelSize = localStorage.getItem('pixelSize') || 1;
+  sizeSelect.value = pixelSize;
+
   prevColorBtn.style.backgroundColor = localStorage.getItem('prevColor') || '#90ee90';
+
+  const dataURL = localStorage.getItem('canvasData');
+  if (dataURL) {
+    const img = new Image();
+    img.onload = () => {
+      drawImg(img.src, img.width, img.height);
+    };
+    img.src = dataURL;
+  }
 }
 
-init();
+
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+});
