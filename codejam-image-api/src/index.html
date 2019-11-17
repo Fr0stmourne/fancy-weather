@@ -16,8 +16,11 @@
         <button class="btn main-header__menu-btn"><span class="visually-hidden">Menu</span></button>
         <h1 class="main-header__title">CodeJam Palette</h1>
       </div>
-      <button class="btn main-header__extra-btn"><span class="visually-hidden">Extra
-          menu</span></button>
+      <div class="main-header__wrapper">
+
+        <button class="btn main-header__extra-btn"><span class="visually-hidden">Extra
+            menu</span></button>
+      </div>
     </div>
   </header>
   <main>
@@ -59,17 +62,17 @@
         </section>
         <section class="picture-controls">
           <ul class="picture-controls__list">
-            <li class="picture-controls__option"><label class="picture-controls__label"><input class="visually-hidden"
-                  type="radio" name="picture-option" id="4x4">4x4</label>
+            <li class="picture-controls__option"><button class="picture-controls__btn picture-controls__btn--clear"
+                id="clear">Clear</button>
             </li>
-            <li class="picture-controls__option"><button class="picture-controls__clear-btn" id="clear">Clear</button>
-            </li>
-            <li class="picture-controls__option"><button class="picture-controls__grayscale-btn" id="grayscale-btn">B &
+            <li class="picture-controls__option"><button class="picture-controls__btn picture-controls__btn--grayscale"
+                id="grayscale-btn">B &
                 W</button>
             </li>
-            <li class="picture-controls__option"><button class="picture-controls__town-btn"
-                id="town-search">Search</button>
-              <input type="text" class="picture-controls__town-input" id="town-input">
+            <li class="picture-controls__option picture-controls__option--search"><input type="search"
+                class="picture-controls__town-input" placeholder="Choose town" id="town-input"><button
+                class="picture-controls__btn picture-controls__btn--search" id="town-search"><span
+                  class="visually-hidden">Search</span></button>
             </li>
             <li class="picture-controls__option"><select name="canvas-size" id="size-select"
                 class="picture-controls__size-select">

@@ -1,25 +1,44 @@
 .picture-controls {
+  width: 230px;
   box-shadow: 0 2px 5px -2px;
 
-  &__label {
-    display: block;
-    padding: 10px 30px;
-    cursor: pointer;
+  &__option {
+    border-bottom: 1px solid #000;
 
-    .picture-controls__option:not(:last-child) & {
-      border-bottom: 1px solid black;
-    }
-
-    &--active {
-      background-color: rgba(#000, 0.2);
+    &--search {
+      display: flex;
     }
   }
 
-  &__clear-btn {
+  &__town-input {
+    width: 80%;
+    box-sizing: border-box;
+    border: 0;
+    padding-left: 10px;
+  }
+
+  &__btn {
     width: 100%;
     padding: 10px 30px;
     background-color: transparent;
     border: 0;
+
     text-align: left;
+
+    &--search {
+      box-sizing: border-box;
+      width: 20%;
+      padding: 25px;
+      background-image: url(/assets/img/search.svg);
+      background-repeat: no-repeat;
+      background-size: 25px;
+      background-position: center;
+    }
   }
+
+  &__size-select {
+    width: 100%;
+    padding: 10px;
+  }
+
 }
