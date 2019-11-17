@@ -312,6 +312,7 @@ clearBtn.addEventListener('click', () => {
   ctx.fillStyle = '#eeeeee';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = fillColor;
+  isGrayscaleAvailable = false;
 });
 
 const frame = {
@@ -440,7 +441,6 @@ function init() {
     img.src = dataURL;
   }
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
   init();

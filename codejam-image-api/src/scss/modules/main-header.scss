@@ -6,6 +6,7 @@
   .container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   &__menu-btn {
@@ -38,4 +39,13 @@
     margin: 10px 0;
   }
 
+  &__output {
+    margin: 0;
+  }
+
+  &__avatar {
+    width: 100%;
+    max-width: 50px;
+    margin: 0 20px;
+  }
 }
