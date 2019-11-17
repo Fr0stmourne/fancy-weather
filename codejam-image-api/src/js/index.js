@@ -363,7 +363,12 @@ function changeHandler() {
   updateSize(pixelSize);
   const imgJson = JSON.parse(localStorage.getItem('imgData'));
   const dataURL = localStorage.getItem('canvasData');
-  drawImg(dataURL, imgJson.width, imgJson.height, true);
+  if (imgJson) {
+    drawImg(dataURL, imgJson.width, imgJson.height, true);
+  } else {
+    console.log('draw');
+    drawImg(dataURL, canvas.width, canvas.height);
+  }
 }
 
 async function loadHandler() {
