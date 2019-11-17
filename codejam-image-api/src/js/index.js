@@ -22,12 +22,14 @@ const prevColorBtn = document.querySelector(
 );
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
-const pixelSize = 1;
+let pixelSize = 1;
 const ACCESS_KEY = '79060e7faaa2c684952c28824dc484ca9ce148b44f17f43a75f5137def261120';
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
 const townInput = document.querySelector('#town-input');
 const townBtn = document.querySelector('#town-search');
+const sizeSelect = document.querySelector('#size-select');
+const grayscaleBtn = document.querySelector('#grayscale-btn');
 const [canvasWidth, canvasHeight] = [
   window
     .getComputedStyle(canvas)
@@ -265,16 +267,6 @@ canvas.addEventListener('mousedown', (evt) => {
   }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const dataURL = localStorage.getItem('canvasData');
-  if (dataURL) {
-    const img = new Image();
-    img.src = dataURL;
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0);
-    };
-  }
-});
 
 canvas.addEventListener('mouseup', () => {
   if (mode === 'pencil') {
@@ -321,36 +313,55 @@ clearBtn.addEventListener('click', () => {
 });
 
 const frame = {
-  width: canvasWidth,
-  height: canvasHeight,
+  width: canvas.width,
+  height: canvas.height,
 };
 
-// function drawLoadedImg(link, imgWidth, imgHeight) {
-//   console.log(link, imgWidth);
-//   const img = new Image();
-//   img.src = link;
-//   img.crossOrigin = 'anonymous';
-//   const { width: resizedWidth, height: resizedHeight } = resize(frame,
-//     { width: imgWidth.width, height: imgHeight.height });
-//   img.onload = () => {
-//     ctx.drawImage(img, (canvasWidth - resizedWidth) / 2, (canvasHeight - resizedHeight) / 2,
-//       resizedWidth / pixelSize, resizedHeight / pixelSize);
-//     console.log('drew smth');
-//   };
-// }
-
-function drawLoadedImg(response) {
-  const img = new Image();
-  img.src = response.urls.small;
-  img.crossOrigin = 'anonymous';
-  const { width: resizedWidth, height: resizedHeight } = resize(frame,
-    { width: response.width, height: response.height });
-  img.onload = () => {
-    ctx.drawImage(img, (canvasWidth - resizedWidth) / 2, (canvasHeight - resizedHeight) / 2,
-      resizedWidth / pixelSize, resizedHeight / pixelSize);
-    saveCanvas();
-  };
+function updateSize(newPixelSize) {
+  canvas.width = canvasWidth / newPixelSize;
+  canvas.height = canvasHeight / newPixelSize;
+  frame.width = canvas.width;
+  frame.height = canvas.height;
 }
+
+function drawImg(link, width, height, onChange) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  updateSize(pixelSize);
+  const { width: resizedWidth, height: resizedHeight } = resize(frame,
+    { width, height });
+  return new Promise((resolve, reject) => {
+    img.onload = () => {
+      console.log(resizedWidth, resizedHeight);
+      if (onChange) {
+        ctx.drawImage(img, 0,
+          0, canvas.width, canvas.height);
+      } else {
+        ctx.drawImage(img, (canvas.width - resizedWidth) / 2,
+          (canvas.height - resizedHeight) / 2,
+          resizedWidth, resizedHeight);
+        // ctx.drawImage(img, 0,
+        //   0, resizedWidth, resizedHeight);
+      }
+      resolve({ done: true });
+    };
+    img.onerror = reject;
+    img.src = link;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const dataURL = localStorage.getItem('canvasData');
+  if (dataURL) { // create function
+    const img = new Image();
+    img.onload = () => {
+      // ctx.drawImage(img, 0, 0);
+      console.log('img.width', img.width, 'img.height', img.height);
+      drawImg(img.src, img.width, img.height);
+    };
+    img.src = dataURL;
+  }
+});
 
 async function makeQuery(town = 'st-petersburg') {
   const apiData = await fetch(
@@ -359,13 +370,47 @@ async function makeQuery(town = 'st-petersburg') {
   return apiData.json();
 }
 
+function log(width, height) {
+  console.log(`drawing on canvas.width ${canvas.width} canvas.height ${canvas.height} and size: width ${width}, height ${height}`);
+}
+
 async function loadHandler() {
   const json = await makeQuery(townInput.value);
   clearBtn.click();
-  drawLoadedImg(json);
+  log(json.width, json.height);
+  localStorage.setItem('imgData', JSON.stringify(json));
+  await drawImg(json.urls.regular, json.width, json.height);
+  saveCanvas();
 }
 
 townBtn.addEventListener('click', loadHandler);
+
+sizeSelect.addEventListener('change', () => {
+  console.log(sizeSelect.value);
+  pixelSize = sizeSelect.value;
+  updateSize(pixelSize);
+  const imgJson = JSON.parse(localStorage.getItem('imgData'));
+  const dataURL = localStorage.getItem('canvasData');
+  log(imgJson.width, imgJson.height);
+  drawImg(dataURL, imgJson.width, imgJson.height, true);
+});
+
+
+grayscaleBtn.addEventListener('click', () => {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const { data } = imageData;
+  function grayscale() {
+    for (let i = 0; i < data.length; i += 4) {
+      const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+      data[i] = avg;
+      data[i + 1] = avg;
+      data[i + 2] = avg;
+    }
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  grayscale();
+});
 
 function init() {
   fillColor = colorInput.value;

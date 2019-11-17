@@ -64,9 +64,19 @@
             </li>
             <li class="picture-controls__option"><button class="picture-controls__clear-btn" id="clear">Clear</button>
             </li>
+            <li class="picture-controls__option"><button class="picture-controls__grayscale-btn" id="grayscale-btn">B &
+                W</button>
+            </li>
             <li class="picture-controls__option"><button class="picture-controls__town-btn"
                 id="town-search">Search</button>
               <input type="text" class="picture-controls__town-input" id="town-input">
+            </li>
+            <li class="picture-controls__option"><select name="canvas-size" id="size-select"
+                class="picture-controls__size-select">
+                <option value="4" class="picture-controls__size">128*128</option>
+                <option value="2" class="picture-controls__size">256*256</option>
+                <option value="1" class="picture-controls__size" selected>512*512</option>
+              </select>
             </li>
           </ul>
         </section>
