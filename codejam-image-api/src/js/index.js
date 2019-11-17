@@ -22,7 +22,7 @@ const prevColorBtn = document.querySelector(
 );
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
-let pixelSize;
+let pixelSize = 1;
 const ACCESS_KEY = '79060e7faaa2c684952c28824dc484ca9ce148b44f17f43a75f5137def261120';
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
@@ -101,11 +101,9 @@ function line(x0, y0, x1, y1) {
     }
   }
   ctx.fillRect(x1, y1, 1, 1);
-  console.log('drawing');
 }
 
 function pressedMouseMoveHandler(evt) {
-  console.log('moving');
   const { x, y } = getMousePos(evt);
   lastCoords = lastCoords.x
     ? lastCoords
@@ -369,7 +367,7 @@ function changeHandler() {
 }
 
 async function loadHandler() {
-  const json = await makeQuery(townInput.value);
+  const json = await makeQuery(townInput.value || undefined);
   clearBtn.click();
   const prevSize = sizeSelect.value;
   sizeSelect.value = 1;
@@ -413,11 +411,10 @@ grayscaleBtn.addEventListener('click', () => {
 function init() {
   fillColor = colorInput.value;
   mode = localStorage.getItem('tool') || 'pencil';
-  console.log(mode);
   lastCoords = {};
   canvas.width = canvasWidth / pixelSize;
   canvas.height = canvasHeight / pixelSize;
-  // ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = false;
   let currentControl;
   controlMode.forEach((val, key) => {
     if (val === mode) currentControl = key;
