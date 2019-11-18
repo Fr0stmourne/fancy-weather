@@ -7,7 +7,7 @@ export default async function makeQuery(town = 'st-petersburg') {
       `https://api.unsplash.com/photos/random?query=town,${town}&client_id=${ACCESS_KEY}`,
     );
   } catch (e) {
-    throw new Error(e);
+    throw new Error(`Error: ${e}`);
   }
   return apiData.json();
 }

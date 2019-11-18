@@ -271,14 +271,19 @@ function changeHandler() {
 }
 
 async function loadHandler() {
-  const json = await makeQuery(townInput.value || undefined);
-  clearBtn.click();
-  const prevSize = sizeSelect.value;
-  sizeSelect.value = 1;
-  pixelSize = 1;
-  localStorage.setItem('imgData', JSON.stringify(json));
-  await drawImg(json.urls.regular, json.width, json.height);
-  saveCanvas();
+  let prevSize;
+  try {
+    const json = await makeQuery(townInput.value || undefined);
+    clearBtn.click();
+    prevSize = sizeSelect.value;
+    sizeSelect.value = 1;
+    pixelSize = 1;
+    localStorage.setItem('imgData', JSON.stringify(json));
+    await drawImg(json.urls.regular, json.width, json.height);
+    saveCanvas();
+  } catch (e) {
+    throw new Error(`Error: ${e}`);
+  }
 
   sizeSelect.value = prevSize;
   pixelSize = prevSize;
