@@ -155,7 +155,7 @@ canvas.addEventListener('mousedown', (evt) => {
   if (tool === 'fill') {
     const fillHandler = (e) => {
       ctx.fillStyle = fillColor;
-      floodFill(getMousePos(e, pixelSize).x, getMousePos(e, pixelSize).y, canvas);
+      floodFill(getMousePos(e, pixelSize).x, getMousePos(e, pixelSize).y, canvas, fillColor);
       canvas.removeEventListener('click', fillHandler);
       saveCanvas();
     };
@@ -230,6 +230,11 @@ function updateSize(newPixelSize) {
   frame.height = canvas.height;
 }
 
+function disableSmoothing() {
+  ctx.imageSmoothingEnabled = false;
+  ctx.webkitImageSmoothingEnabled = false;
+}
+
 function drawImg(link, width, height, isFirstDraw = true) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
@@ -239,8 +244,7 @@ function drawImg(link, width, height, isFirstDraw = true) {
   return new Promise((resolve, reject) => {
     img.onload = () => {
       clearBtn.click();
-      ctx.imageSmoothingEnabled = false;
-      ctx.webkitImageSmoothingEnabled = false;
+      disableSmoothing();
       if (!isFirstDraw) {
         ctx.drawImage(img, 0,
           0, canvas.width, canvas.height);
@@ -324,8 +328,7 @@ function init() {
   lastCoords = {};
   canvas.width = canvasWidth / pixelSize;
   canvas.height = canvasHeight / pixelSize;
-  ctx.imageSmoothingEnabled = false;
-  ctx.webkitImageSmoothingEnabled = false;
+  disableSmoothing();
   let currentControl;
   controlTool.forEach((val, key) => {
     if (val === tool) currentControl = key;

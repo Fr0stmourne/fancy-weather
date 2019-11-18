@@ -1,6 +1,6 @@
 import { getPixelHexColor } from './utils';
 
-export default function floodFill(startX, startY, canvas) {
+export default function floodFill(startX, startY, canvas, fillColor) {
   const ctx = canvas.getContext('2d');
   const startColor = getPixelHexColor({
     x: startX,
@@ -11,7 +11,8 @@ export default function floodFill(startX, startY, canvas) {
     const currentPixelColor = getPixelHexColor(pixelPos, ctx);
     return currentPixelColor === startColor;
   }
-
+  if (fillColor === startColor) return;
+  ctx.fillStyle = fillColor;
   const pixelStack = [[startX, startY]];
 
   while (pixelStack.length) {
