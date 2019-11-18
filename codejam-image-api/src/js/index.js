@@ -1,7 +1,11 @@
 import rgbToHex from './rgbConverter';
 import resize from './resize';
+import line from './bresenham';
+import { getMousePos, getPixelHexColor } from './utils';
+import floodFill from './floodFill';
+import makeQuery from './makeQuery';
 
-const controlMode = new Map([
+const controlTool = new Map([
   [0, 'fill'],
   [1, 'color'],
   [2, 'pencil'],
@@ -22,8 +26,6 @@ const prevColorBtn = document.querySelector(
 );
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
-let pixelSize = 1;
-const ACCESS_KEY = '79060e7faaa2c684952c28824dc484ca9ce148b44f17f43a75f5137def261120';
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
 const townInput = document.querySelector('#town-input');
@@ -41,21 +43,15 @@ const [canvasWidth, canvasHeight] = [
     .split('px')[0],
 ];
 let isGrayscaleAvailable = false;
-let mode;
+let pixelSize = 1;
+let tool;
 let fillColor;
 let lastCoords;
 
-function switchMode(newMode) {
-  if (newMode === undefined) throw new Error('Unknown app mode.');
-  mode = newMode;
-  localStorage.setItem('tool', mode);
-}
-
-function getMousePos(evt) {
-  return {
-    x: Math.floor(evt.offsetX / pixelSize),
-    y: Math.floor(evt.offsetY / pixelSize),
-  };
+function switchTool(newTool) {
+  if (newTool === undefined) throw new Error('Unknown app mode.');
+  tool = newTool;
+  localStorage.setItem('tool', tool);
 }
 
 function updateColorPalette() {
@@ -81,30 +77,8 @@ function changeColor(newColor, saveAfterChange = true) {
   if (saveAfterChange) saveColorPalette();
 }
 
-function line(x0, y0, x1, y1) {
-  const dx = Math.abs(x1 - x0);
-  const sx = x0 < x1 ? 1 : -1;
-  const dy = Math.abs(y1 - y0);
-  const sy = y0 < y1 ? 1 : -1;
-  let err = (dx > dy ? dx : -dy) / 2;
-
-  while (!(x0 === x1 && y0 === y1)) {
-    ctx.fillRect(x0, y0, 1, 1);
-    const e2 = err;
-    if (e2 > -dx) {
-      err -= dy;
-      x0 += sx;
-    }
-    if (e2 < dy) {
-      err += dx;
-      y0 += sy;
-    }
-  }
-  ctx.fillRect(x1, y1, 1, 1);
-}
-
 function pressedMouseMoveHandler(evt) {
-  const { x, y } = getMousePos(evt);
+  const { x, y } = getMousePos(evt, pixelSize);
   lastCoords = lastCoords.x
     ? lastCoords
     : {
@@ -112,7 +86,7 @@ function pressedMouseMoveHandler(evt) {
       y,
     };
   ctx.fillStyle = fillColor;
-  line(lastCoords.x, lastCoords.y, x, y);
+  line(ctx, lastCoords.x, lastCoords.y, x, y);
   lastCoords.x = x;
   lastCoords.y = y;
 }
@@ -160,107 +134,35 @@ function mouseLeaveHandler(e) {
 
   const leaveCoords = calculateLeaveCoords(e);
 
-  line(lastCoords.x, lastCoords.y, leaveCoords.x, leaveCoords.y);
+  line(ctx, lastCoords.x, lastCoords.y, leaveCoords.x, leaveCoords.y);
   lastCoords = {};
   saveCanvas();
   canvas.removeEventListener('mouseleave', mouseLeaveHandler);
 }
 
-function getPixelHexColor(pixelPos) {
-  const color = ctx.getImageData(pixelPos.x, pixelPos.y, 1, 1).data.slice(0, 3);
-  return rgbToHex(`rgb(${color.join(',')}`);
-}
-
-function floodFill(startX, startY) {
-  const startColor = getPixelHexColor({
-    x: startX,
-    y: startY,
-  });
-
-  function matchStartColor(pixelPos) {
-    const currentPixelColor = getPixelHexColor(pixelPos);
-    return currentPixelColor === startColor;
-  }
-
-  const pixelStack = [[startX, startY]];
-
-  while (pixelStack.length) {
-    let reachLeft;
-    let reachRight;
-    const newPos = pixelStack.pop();
-    const pixelPos = {
-      x: newPos[0],
-      y: newPos[1],
-    };
-
-    while (pixelPos.y >= 0 && matchStartColor(pixelPos)) {
-      pixelPos.y -= 1;
-    }
-    pixelPos.y += 1;
-    reachLeft = false;
-    reachRight = false;
-    while (pixelPos.y < canvas.height && matchStartColor(pixelPos)) {
-      ctx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
-
-      if (pixelPos.x > 0) {
-        if (
-          matchStartColor({
-            x: pixelPos.x - 1,
-            y: pixelPos.y,
-          })
-        ) {
-          if (!reachLeft) {
-            pixelStack.push([pixelPos.x - 1, pixelPos.y]);
-            reachLeft = true;
-          }
-        } else if (reachLeft) {
-          reachLeft = false;
-        }
-      }
-
-      if (pixelPos.x < canvas.width) {
-        if (
-          matchStartColor({
-            x: pixelPos.x + 1,
-            y: pixelPos.y,
-          })
-        ) {
-          if (!reachRight) {
-            pixelStack.push([pixelPos.x + 1, pixelPos.y]);
-            reachRight = true;
-          }
-        } else if (reachRight) {
-          reachRight = false;
-        }
-      }
-
-      pixelPos.y += 1;
-    }
-  }
-}
 
 canvas.addEventListener('mousedown', (evt) => {
-  if (mode === 'pencil') {
+  if (tool === 'pencil') {
     canvas.addEventListener('mousemove', pressedMouseMoveHandler);
-    const coordinates = getMousePos(evt);
+    const coordinates = getMousePos(evt, pixelSize);
     ctx.fillStyle = fillColor;
     ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
 
     canvas.addEventListener('mouseleave', mouseLeaveHandler);
   }
 
-  if (mode === 'fill') {
+  if (tool === 'fill') {
     const fillHandler = (e) => {
       ctx.fillStyle = fillColor;
-      floodFill(getMousePos(e).x, getMousePos(e).y);
+      floodFill(getMousePos(e, pixelSize).x, getMousePos(e, pixelSize).y, canvas);
       canvas.removeEventListener('click', fillHandler);
       saveCanvas();
     };
     canvas.addEventListener('click', fillHandler);
   }
-  if (mode === 'color') {
+  if (tool === 'color') {
     const colorClickHandler = (e) => {
-      const colorHex = getPixelHexColor(getMousePos(e));
+      const colorHex = getPixelHexColor(getMousePos(e, pixelSize), ctx);
       changeColor(colorHex);
       controls[2].click();
       canvas.removeEventListener('click', colorClickHandler);
@@ -271,7 +173,7 @@ canvas.addEventListener('mousedown', (evt) => {
 
 
 canvas.addEventListener('mouseup', () => {
-  if (mode === 'pencil') {
+  if (tool === 'pencil') {
     canvas.removeEventListener('mousemove', pressedMouseMoveHandler);
     canvas.removeEventListener('mouseleave', mouseLeaveHandler);
     saveCanvas();
@@ -283,12 +185,12 @@ controlsList.addEventListener('click', (e) => updateControls(e));
 
 controls.forEach((control, index) => {
   control.addEventListener('click', () => {
-    switchMode(controlMode.get(index));
+    switchTool(controlTool.get(index));
   });
 });
 
 document.addEventListener('keydown', (evt) => {
-  switchMode(hotkeyBindings[evt.code]);
+  switchTool(hotkeyBindings[evt.code]);
   updateControls(evt, evt.code);
 });
 
@@ -327,7 +229,7 @@ function updateSize(newPixelSize) {
   frame.height = canvas.height;
 }
 
-function drawImg(link, width, height, onChange) {
+function drawImg(link, width, height, isFirstDraw = true) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   updateSize(pixelSize);
@@ -335,7 +237,10 @@ function drawImg(link, width, height, onChange) {
     { width, height });
   return new Promise((resolve, reject) => {
     img.onload = () => {
-      if (onChange) {
+      clearBtn.click();
+      ctx.imageSmoothingEnabled = false;
+      ctx.webkitImageSmoothingEnabled = false;
+      if (!isFirstDraw) {
         ctx.drawImage(img, 0,
           0, canvas.width, canvas.height);
       } else {
@@ -351,12 +256,6 @@ function drawImg(link, width, height, onChange) {
   });
 }
 
-async function makeQuery(town = 'st-petersburg') {
-  const apiData = await fetch(
-    `https://api.unsplash.com/photos/random?query=town,${town}&client_id=${ACCESS_KEY}`,
-  );
-  return apiData.json();
-}
 
 function changeHandler() {
   pixelSize = sizeSelect.value;
@@ -365,9 +264,8 @@ function changeHandler() {
   const imgJson = JSON.parse(localStorage.getItem('imgData'));
   const dataURL = localStorage.getItem('canvasData');
   if (imgJson) {
-    drawImg(dataURL, imgJson.width, imgJson.height, true);
+    drawImg(dataURL, imgJson.width, imgJson.height, false);
   } else {
-    console.log('draw');
     drawImg(dataURL, canvas.width, canvas.height);
   }
 }
@@ -416,14 +314,15 @@ grayscaleBtn.addEventListener('click', () => {
 
 function init() {
   fillColor = colorInput.value;
-  mode = localStorage.getItem('tool') || 'pencil';
+  tool = localStorage.getItem('tool') || 'pencil';
   lastCoords = {};
   canvas.width = canvasWidth / pixelSize;
   canvas.height = canvasHeight / pixelSize;
   ctx.imageSmoothingEnabled = false;
+  ctx.webkitImageSmoothingEnabled = false;
   let currentControl;
-  controlMode.forEach((val, key) => {
-    if (val === mode) currentControl = key;
+  controlTool.forEach((val, key) => {
+    if (val === tool) currentControl = key;
   });
   controls[currentControl].click();
   changeColor(localStorage.getItem('mainColor') || '#000000', false);
