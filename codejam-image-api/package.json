@@ -54,6 +54,7 @@
     "css-mqpacker": "^7.0.0",
     "cssnano": "^4.1.8",
     "mocha-webpack": "^1.1.0",
+    "netlify-auth-providers": "^1.0.0-alpha5",
     "normalize.css": "^8.0.1"
   }
 }
