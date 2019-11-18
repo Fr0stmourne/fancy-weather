@@ -1,6 +1,6 @@
 import Netlify from 'netlify-auth-providers';
 
-export default function authenticate() {
+export default function trackAuthentication() {
   const anchorTag = document.getElementById('auth');
   const outputText = document.getElementById('auth-output');
   anchorTag.addEventListener('click', (e) => {

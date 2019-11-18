@@ -4,7 +4,7 @@ import line from './bresenham';
 import { getMousePos, getPixelHexColor } from './utils';
 import floodFill from './floodFill';
 import makeQuery from './makeQuery';
-import authenticate from './auth';
+import trackAuthentication from './auth';
 
 const controlTool = new Map([
   [0, 'fill'],
@@ -345,9 +345,10 @@ function init() {
     };
     img.src = dataURL;
   }
+
+  trackAuthentication();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   init();
-  authenticate();
 });
