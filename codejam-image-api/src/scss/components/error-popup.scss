@@ -1,0 +1,51 @@
+@keyframes bubble {
+  0% {
+    opacity: 0;
+    // display: block;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+// @keyframes fade {
+//   0% {
+//     opacity: 1;
+//   }
+
+//   100% {
+//     opacity: 0;
+//     // display: none;
+//   }
+// }
+
+.error-popup {
+  // display: none;
+  position: fixed;
+  padding: 20px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(#000, 0.7);
+  border: 2px solid #000;
+  color: #fff;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+.error-popup--bubble {
+  animation: bubble 4.5s ease;
+}
+
+// .error-popup--fade {
+//   animation: fade 1.5s ease-in 3s forwards;
+// }

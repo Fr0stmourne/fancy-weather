@@ -33,6 +33,7 @@ const townInput = document.querySelector('#town-input');
 const townBtn = document.querySelector('#town-search');
 const sizeSelect = document.querySelector('#size-select');
 const grayscaleBtn = document.querySelector('#grayscale-btn');
+const errorPopup = document.querySelector('#error-popup');
 const [canvasWidth, canvasHeight] = [
   window
     .getComputedStyle(canvas)
@@ -317,7 +318,10 @@ grayscaleBtn.addEventListener('click', () => {
     grayscale();
     saveCanvas();
   } else {
-    alert('Error: an image is not loaded!');
+    errorPopup.classList.add('error-popup--bubble');
+    errorPopup.addEventListener('animationend', () => {
+      errorPopup.classList.remove('error-popup--bubble');
+    });
   }
 });
 
