@@ -1,10 +1,10 @@
-import rgbToHex from './rgbConverter';
 import resize from './resize';
 import line from './bresenham';
 import { getMousePos, getPixelHexColor } from './utils';
 import floodFill from './floodFill';
 import makeQuery from './makeQuery';
 import trackAuthentication from './auth';
+import { rgbToHex } from './rgbConverter';
 
 const controlTool = new Map([
   [0, 'fill'],
@@ -22,9 +22,7 @@ const controls = document.querySelectorAll('.controls__control-btn');
 const controlsList = controls[0].closest('ul');
 const colorInput = document.querySelector('input[type="color"]');
 const colorInputLbl = colorInput.closest('label');
-const prevColorBtn = document.querySelector(
-  '.colors__color--previous .colors__color-btn',
-);
+const prevColorBtn = document.querySelector('.colors__color--previous .colors__color-btn');
 const presetBtns = document.querySelectorAll('.colors__preset button');
 const presetBtnsColors = ['#ff0000', '#0000ff'];
 const clearBtn = document.querySelector('#clear');

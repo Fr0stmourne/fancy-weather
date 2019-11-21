@@ -3,7 +3,7 @@ function componentToHex(c) {
   return hex.length === 1 ? `0${hex}` : hex;
 }
 
-function rgbToHex(str) {
+export function rgbToHex(str) {
   if (!str) return null;
   const rgbArr = str.split('(')[1].split(')')[0].split(',');
   return `#${rgbArr.reduce((acc, el) => {
@@ -12,4 +12,7 @@ function rgbToHex(str) {
   }, '')}`;
 }
 
-export default rgbToHex;
+export function hexToRgb(hex) {
+  const hexArr = hex.slice(1).match(/.{2}/g);
+  return hexArr.map((hexPart) => parseInt(hexPart, 16));
+}

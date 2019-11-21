@@ -1,4 +1,4 @@
-import rgbToHex from './rgbConverter';
+import { rgbToHex } from './rgbConverter';
 
 export function getMousePos(evt, pixelSize) {
   return {

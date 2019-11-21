@@ -1,47 +1,56 @@
 import { getPixelHexColor } from './utils';
+import { hexToRgb } from './rgbConverter';
 
 export default function floodFill(startX, startY, canvas, fillColor) {
   const ctx = canvas.getContext('2d');
-  const startColor = getPixelHexColor({
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const startColor = hexToRgb(getPixelHexColor({
     x: startX,
     y: startY,
-  }, ctx);
+  }, ctx));
+  const desiredColor = hexToRgb(fillColor);
 
   function matchStartColor(pixelPos) {
-    const currentPixelColor = getPixelHexColor(pixelPos, ctx);
-    return currentPixelColor === startColor;
+    const [r, g, b] = imageData.data.slice(pixelPos, pixelPos + 3);
+    return [r, g, b].every((el, index) => el === startColor[index]);
   }
+
+  function colorPixel(pixelPos) {
+    [imageData.data[pixelPos], imageData.data[pixelPos + 1],
+      imageData.data[pixelPos + 2]] = desiredColor;
+  }
+
   if (fillColor === startColor) return;
-  ctx.fillStyle = fillColor;
+
   const pixelStack = [[startX, startY]];
 
   while (pixelStack.length) {
     let reachLeft;
     let reachRight;
     const newPos = pixelStack.pop();
-    const pixelPos = {
-      x: newPos[0],
-      y: newPos[1],
-    };
+    const x = newPos[0];
+    let y = newPos[1];
+    let pixelPos = (y * canvas.width + x) * 4;
 
-    while (pixelPos.y >= 0 && matchStartColor(pixelPos)) {
-      pixelPos.y -= 1;
+    while (y >= 0 && matchStartColor(pixelPos)) {
+      pixelPos -= canvas.width * 4;
+      y -= 1;
     }
-    pixelPos.y += 1;
+    y += 1;
+    pixelPos += canvas.width * 4;
+
     reachLeft = false;
     reachRight = false;
-    while (pixelPos.y < canvas.height && matchStartColor(pixelPos)) {
-      ctx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
 
-      if (pixelPos.x > 0) {
+    while (y < canvas.height && matchStartColor(pixelPos)) {
+      colorPixel(pixelPos);
+
+      if (x > 0) {
         if (
-          matchStartColor({
-            x: pixelPos.x - 1,
-            y: pixelPos.y,
-          })
+          matchStartColor(pixelPos - 4)
         ) {
           if (!reachLeft) {
-            pixelStack.push([pixelPos.x - 1, pixelPos.y]);
+            pixelStack.push([x - 1, y]);
             reachLeft = true;
           }
         } else if (reachLeft) {
@@ -49,23 +58,22 @@ export default function floodFill(startX, startY, canvas, fillColor) {
         }
       }
 
-      if (pixelPos.x < canvas.width) {
+      if (x < canvas.width) {
         if (
-          matchStartColor({
-            x: pixelPos.x + 1,
-            y: pixelPos.y,
-          })
+          matchStartColor(pixelPos + 4)
         ) {
           if (!reachRight) {
-            pixelStack.push([pixelPos.x + 1, pixelPos.y]);
+            pixelStack.push([x + 1, y]);
             reachRight = true;
           }
         } else if (reachRight) {
           reachRight = false;
         }
       }
-
-      pixelPos.y += 1;
+      pixelPos += canvas.width * 4;
+      y += 1;
     }
   }
+
+  ctx.putImageData(imageData, 0, 0);
 }

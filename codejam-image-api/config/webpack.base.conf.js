@@ -2,7 +2,8 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 const PATHS = {
   src: path.join(__dirname, '../src'),
@@ -29,14 +30,14 @@ module.exports = {
       loader: ['babel-loader', 'eslint-loader'],
       exclude: '/node_modules/',
     }, {
-      test: /\.(png|jpg|gif|svg|ico|jpeg)$/,
+      test: /\.(jpe?g|png|gif|svg)$/,
       loader: 'file-loader',
       options: {
         name: '[name].[ext]',
       },
     },
     {
-      test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+      test: /\.(woff|woff2|eot|ttf|otf)?$/,
       loader: 'file-loader',
       options: {
         name: '[name].[ext]',
@@ -79,6 +80,7 @@ module.exports = {
     }],
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: `${PATHS.assets}css/[name].css`,
     }),
@@ -97,29 +99,6 @@ module.exports = {
       to: `${PATHS.assets}fonts`,
     },
     ]),
-    new ImageminPlugin({
-      bail: false, // Ignore errors on corrupted images
-      imageminOptions: {
-        plugins: [
-          ['gifsicle', {
-            interlaced: true,
-          }],
-          ['jpegtran', {
-            progressive: true,
-          }],
-          ['optipng', {
-            optimizationLevel: 5,
-          }],
-          [
-            'svgo',
-            {
-              plugins: [{
-                removeViewBox: false,
-              }],
-            },
-          ],
-        ],
-      },
-    }),
+    new ImageminPlugin({ test: /\.(jpe?g|png|gif|svg)$/i }),
   ],
 };
