@@ -1,10 +1,6 @@
 import rgbToHex from './rgbConverter';
 
-const controlMode = new Map([
-  [0, 'fill'],
-  [1, 'color'],
-  [2, 'pencil'],
-]);
+const controlMode = ['fill', 'color', 'pencil'];
 const hotkeyBindings = {
   KeyB: 'fill',
   KeyP: 'pencil',
@@ -22,14 +18,15 @@ const presetBtnsColors = ['#ff0000', '#0000ff'];
 const pixelSize = 32;
 const clearBtn = document.querySelector('#clear');
 const activeClass = 'controls__control-btn--active';
-const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width').split('px')[0], window.getComputedStyle(canvas).getPropertyValue('height').split('px')[0]];
+const WHITE_COLOR = '#ffffff';
+const [canvasWidth, canvasHeight] = [window.getComputedStyle(canvas).getPropertyValue('width').split('px')[0],
+  window.getComputedStyle(canvas).getPropertyValue('height').split('px')[0]];
 let mode;
 let fillColor;
 let lastCoords;
 
 function switchMode(newMode) {
-  if (newMode === undefined) throw new Error('Unknown app mode.');
-  mode = newMode;
+  mode = newMode || mode;
 }
 
 function getMousePos(evt) {
@@ -154,7 +151,7 @@ function floodFill(startX, startY) {
     x: startX,
     y: startY,
   });
-
+  if (fillColor === startColor) return;
   function matchStartColor(pixelPos) {
     const currentPixelColor = getPixelHexColor(pixelPos);
     return currentPixelColor === startColor;
@@ -217,32 +214,37 @@ function floodFill(startX, startY) {
 }
 
 canvas.addEventListener('mousedown', (evt) => {
-  if (mode === 'pencil') {
-    canvas.addEventListener('mousemove', pressedMouseMoveHandler);
-    const coordinates = getMousePos(evt);
+  const fillHandler = (e) => {
     ctx.fillStyle = fillColor;
-    ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
+    floodFill(getMousePos(e).x, getMousePos(e).y);
+    canvas.removeEventListener('click', fillHandler);
+    saveCanvas();
+  };
 
-    canvas.addEventListener('mouseleave', mouseLeaveHandler);
-  }
+  const colorClickHandler = (e) => {
+    const colorHex = getPixelHexColor(getMousePos(e));
+    changeColor(colorHex);
+    controls[2].click();
+    canvas.removeEventListener('click', colorClickHandler);
+  };
 
-  if (mode === 'fill') {
-    const fillHandler = (e) => {
+  const coordinates = getMousePos(evt);
+
+  switch (mode) {
+    case 'pencil':
+      canvas.addEventListener('mousemove', pressedMouseMoveHandler);
       ctx.fillStyle = fillColor;
-      floodFill(getMousePos(e).x, getMousePos(e).y);
-      canvas.removeEventListener('click', fillHandler);
-      saveCanvas();
-    };
-    canvas.addEventListener('click', fillHandler);
-  }
-  if (mode === 'color') {
-    const colorClickHandler = (e) => {
-      const colorHex = getPixelHexColor(getMousePos(e));
-      changeColor(colorHex);
-      controls[2].click();
-      canvas.removeEventListener('click', colorClickHandler);
-    };
-    canvas.addEventListener('click', colorClickHandler);
+      ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
+      canvas.addEventListener('mouseleave', mouseLeaveHandler);
+      break;
+    case 'fill':
+      canvas.addEventListener('click', fillHandler);
+      break;
+    case 'color':
+      canvas.addEventListener('click', colorClickHandler);
+      break;
+    default:
+      break;
   }
 });
 
@@ -254,6 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
     img.onload = () => {
       ctx.drawImage(img, 0, 0);
     };
+  } else {
+    clearBtn.click();
   }
 });
 
@@ -270,7 +274,7 @@ controlsList.addEventListener('click', (e) => updateControls(e));
 
 controls.forEach((control, index) => {
   control.addEventListener('click', () => {
-    switchMode(controlMode.get(index));
+    switchMode(controlMode[index]);
   });
 });
 
@@ -298,7 +302,7 @@ prevColorBtn.addEventListener('click', () => {
 });
 
 clearBtn.addEventListener('click', () => {
-  ctx.fillStyle = '#eeeeee';
+  ctx.fillStyle = WHITE_COLOR;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = fillColor;
 });
