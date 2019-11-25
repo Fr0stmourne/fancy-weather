@@ -13,6 +13,7 @@ export function rgbToHex(str) {
 }
 
 export function hexToRgb(hex) {
+  if (!hex) return null;
   const hexArr = hex.slice(1).match(/.{2}/g);
   return hexArr.map((hexPart) => parseInt(hexPart, 16));
 }

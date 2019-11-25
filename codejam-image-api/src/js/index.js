@@ -6,11 +6,7 @@ import makeQuery from './makeQuery';
 import trackAuthentication from './auth';
 import { rgbToHex } from './rgbConverter';
 
-const controlTool = new Map([
-  [0, 'fill'],
-  [1, 'color'],
-  [2, 'pencil'],
-]);
+const controlTool = ['fill', 'color', 'pencil'];
 const hotkeyBindings = {
   KeyB: 'fill',
   KeyP: 'pencil',
@@ -32,6 +28,8 @@ const townBtn = document.querySelector('#town-search');
 const sizeSelect = document.querySelector('#size-select');
 const grayscaleBtn = document.querySelector('#grayscale-btn');
 const errorPopup = document.querySelector('#error-popup');
+const WHITE_COLOR = '#ffffff';
+const animationClass = 'error-popup--bubble';
 const [canvasWidth, canvasHeight] = [
   window
     .getComputedStyle(canvas)
@@ -49,8 +47,7 @@ let fillColor;
 let lastCoords;
 
 function switchTool(newTool) {
-  if (newTool === undefined) throw new Error('Unknown app mode.');
-  tool = newTool;
+  tool = newTool || tool;
   localStorage.setItem('tool', tool);
 }
 
@@ -142,32 +139,34 @@ function mouseLeaveHandler(e) {
 
 
 canvas.addEventListener('mousedown', (evt) => {
-  if (tool === 'pencil') {
-    canvas.addEventListener('mousemove', pressedMouseMoveHandler);
-    const coordinates = getMousePos(evt, pixelSize);
+  const coordinates = getMousePos(evt, pixelSize);
+  const fillHandler = (e) => {
     ctx.fillStyle = fillColor;
-    ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
-
-    canvas.addEventListener('mouseleave', mouseLeaveHandler);
-  }
-
-  if (tool === 'fill') {
-    const fillHandler = (e) => {
+    floodFill(getMousePos(e, pixelSize).x, getMousePos(e, pixelSize).y, canvas, fillColor);
+    canvas.removeEventListener('click', fillHandler);
+    saveCanvas();
+  };
+  const colorClickHandler = (e) => {
+    const colorHex = getPixelHexColor(getMousePos(e, pixelSize), ctx);
+    changeColor(colorHex);
+    controls[2].click();
+    canvas.removeEventListener('click', colorClickHandler);
+  };
+  switch (tool) {
+    case 'pencil':
+      canvas.addEventListener('mousemove', pressedMouseMoveHandler);
       ctx.fillStyle = fillColor;
-      floodFill(getMousePos(e, pixelSize).x, getMousePos(e, pixelSize).y, canvas, fillColor);
-      canvas.removeEventListener('click', fillHandler);
-      saveCanvas();
-    };
-    canvas.addEventListener('click', fillHandler);
-  }
-  if (tool === 'color') {
-    const colorClickHandler = (e) => {
-      const colorHex = getPixelHexColor(getMousePos(e, pixelSize), ctx);
-      changeColor(colorHex);
-      controls[2].click();
-      canvas.removeEventListener('click', colorClickHandler);
-    };
-    canvas.addEventListener('click', colorClickHandler);
+      ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
+      canvas.addEventListener('mouseleave', mouseLeaveHandler);
+      break;
+    case 'fill':
+      canvas.addEventListener('click', fillHandler);
+      break;
+    case 'color':
+      canvas.addEventListener('click', colorClickHandler);
+      break;
+    default:
+      break;
   }
 });
 
@@ -185,7 +184,7 @@ controlsList.addEventListener('click', (e) => updateControls(e));
 
 controls.forEach((control, index) => {
   control.addEventListener('click', () => {
-    switchTool(controlTool.get(index));
+    switchTool(controlTool[index]);
   });
 });
 
@@ -211,7 +210,7 @@ prevColorBtn.addEventListener('click', () => {
 });
 
 clearBtn.addEventListener('click', () => {
-  ctx.fillStyle = '#eeeeee';
+  ctx.fillStyle = WHITE_COLOR;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = fillColor;
   isGrayscaleAvailable = false;
@@ -316,9 +315,9 @@ grayscaleBtn.addEventListener('click', () => {
     grayscale();
     saveCanvas();
   } else {
-    errorPopup.classList.add('error-popup--bubble');
+    errorPopup.classList.add(animationClass);
     errorPopup.addEventListener('animationend', () => {
-      errorPopup.classList.remove('error-popup--bubble');
+      errorPopup.classList.remove(animationClass);
     });
   }
 });
@@ -349,6 +348,8 @@ function init() {
       drawImg(img.src, img.width, img.height);
     };
     img.src = dataURL;
+  } else {
+    clearBtn.click();
   }
 
   trackAuthentication();
