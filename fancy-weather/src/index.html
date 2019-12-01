@@ -5,11 +5,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Template</title>
+  <title>Fancy Weather</title>
 </head>
 
 <body>
-  <div id="app">Text</div>
+  <div id="app" class="app">
+
+    <h1 class="app__title visually-hidden">Fancy Weather</h1>
+    <section class="app__controls controls">
+      <h2 class="controls__title visually-hidden">Control panel</h2>
+      <button class="controls__reload-btn">Reload</button>
+      <select name="" id="" class="controls__lang">
+        <option value="En">En</option>
+        <option value="Ru">Ru</option>
+        <option value="Be">Be</option>
+      </select>
+      <div class="controls__temperature-switch">C</div>
+    </section>
+    <section class="app__search search">
+      <input class="search__input" type="search" name="location" id="search">
+      <button class="search__btn">Search</button>
+    </section>
+    <section class="app__weather weather">
+      <h2 class="weather__title">Minsk, Belarus</h2>
+      <time class="weather__day">Mon 28 October</time>
+      <time class="weather__time">17:30</time>
+      <div class="weather__forecast">
+        <div class="weather__temperature">10</div>
+        <div class="weather__details">
+          Overcast
+          <p class="weather__feels-like">Feels like: 7</p>
+          <p class="weather__wind">2 m/s</p>
+          <p class="weather__humidity">83%</p>
+        </div>
+      </div>
+
+      <ul class="weather__forecast-list">
+        <li class="weather__day-forecast day-forecast">
+          <h3 class="day-forecast__title">Tuesday</h3>
+          <div class="day_temp">7</div>
+        </li>
+        <li class="weather__day-forecast day-forecast">
+          <h3 class="day-forecast__title">Wednesday</h3>
+          <div class="day_temp">6</div>
+        </li>
+        <li class="weather__day-forecast day-forecast">
+          <h3 class="day-forecast__title">Thursday</h3>
+          <div class="day_temp">3</div>
+        </li>
+      </ul>
+    </section>
+    <section class="app__map map">
+      <h2 class="map__title visually-hidden">Map</h2>
+      <div id="map-container" style="width: 400px; height: 400px; background-color: black;"></div>
+      <div class="coordinates">
+        <span class="coordinates__lat">Latitude: 53 54</span>
+        <span class="coordinates__long">Longitude: 23 73</span>
+      </div>
+    </section>
+  </div>
+  </div>
 </body>
 
 </html>

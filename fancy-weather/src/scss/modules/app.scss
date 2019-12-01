@@ -1,0 +1,14 @@
+.app {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 20% 80%;
+
+  box-sizing: border-box;
+  padding: 0 100px;
+  margin: 0 auto;
+  max-width: 1600px;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}

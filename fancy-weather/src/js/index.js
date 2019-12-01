@@ -1,35 +1,16 @@
-import getWeatherJSON from './utils';
+// import getPhotoLink from './utils';
 
-class App {
-  // constructor() {
-  //   this.a = 1;
-  // }
+// const appContainer = document.getElementById('app');
 
-  static async init() {
-    const data = await getWeatherJSON();
-    // data.items.forEach((img) => {
-    //   const image = new Image();
-    //   image.crossOrigin = 'anonymous';
-    //   image.onload = () => {
-    //     document.body.appendChild(image);
-    //   };
-    //   image.src = img.link;
-    // });
-    const img = new Image();
-    img.onload = () => {
-      document.body.appendChild(img);
-    };
-    img.src = data.items[0].link;
-    console.log(data.items[0].link);
-  }
-}
+// class App {
+//   static async init() {
+//     const data = await getPhotoLink('snowfall');
+//     const chosenPhoto = data.photos.photo[Math.round(Math.random() * 100)];
+//     appContainer.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.3),
+//  rgba(0,0,0,0.3)), url(${chosenPhoto.url_h})`;
 
-
-// async function test() {
-
+//   }
 // }
 
-// test();
 
-
-App.init();
+// App.init();
