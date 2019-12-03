@@ -1,16 +1,7 @@
-// import getPhotoLink from './utils';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import '../scss/main.scss';
 
-// const appContainer = document.getElementById('app');
+import App from './App';
 
-// class App {
-//   static async init() {
-//     const data = await getPhotoLink('snowfall');
-//     const chosenPhoto = data.photos.photo[Math.round(Math.random() * 100)];
-//     appContainer.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.3),
-//  rgba(0,0,0,0.3)), url(${chosenPhoto.url_h})`;
-
-//   }
-// }
-
-
-// App.init();
+ReactDOM.render(<App />, document.getElementById('app'));
