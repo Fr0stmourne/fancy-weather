@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 
 class TempToggler extends Component {
   render() {
-    return <div className="controls__temperature-switch">C</div>;
+    return (
+      <select name="" id="" className="controls__temp">
+        <option value="C">C</option>
+        <option value="F">F</option>
+      </select>
+    );
   }
 }
 
