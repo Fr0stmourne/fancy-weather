@@ -1,0 +1,11 @@
+.weather {
+  &__forecast-list {
+    display: flex;
+  }
+
+  &__forecast-item {
+    &:not(:last-child) {
+      margin-right: 30px;
+    }
+  }
+}

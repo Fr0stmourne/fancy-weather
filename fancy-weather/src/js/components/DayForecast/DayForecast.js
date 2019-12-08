@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { getDayOfAWeek } from '../../utils';
+import styles from './day-forecast.module.scss';
 
 class DayForecast extends Component {
   render() {
     return (
-      <li className="weather__day-forecast day-forecast">
-        <h3 className="day-forecast__title">Wednesday</h3>
-        <div className="day_temp">6</div>
+      <li className={classnames(styles['day-forecast'], this.props.className)}>
+        <h3 className="day-forecast__title">{getDayOfAWeek(new Date(this.props.forecastData.time * 1000).getDay())}</h3>
+        <div className="day-forecast__temp">{Math.round(this.props.forecastData.temperatureHigh)}</div>
+        <img className={styles['day-forecast__icon']} src={`assets/img/${this.props.forecastData.icon}.png`}></img>
       </li>
     );
   }
 }
+
+DayForecast.propTypes = {
+  forecastData: PropTypes.object,
+  className: PropTypes.string,
+};
 
 export default DayForecast;

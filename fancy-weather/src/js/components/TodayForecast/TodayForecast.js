@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class TodayForecast extends Component {
   render() {
+    console.log(this.props.location);
     return (
       <React.Fragment>
-        <h2 className="weather__title">Minsk, Belarus</h2>
+        <h2 className="weather__title">-, Belarus</h2>
         <time className="weather__day">Mon 28 October</time>
         <time className="weather__time">17:30</time>
         <div className="weather__forecast">
@@ -20,5 +22,10 @@ class TodayForecast extends Component {
     );
   }
 }
+
+TodayForecast.propTypes = {
+  // city: PropTypes.string,
+  location: PropTypes.object,
+};
 
 export default TodayForecast;

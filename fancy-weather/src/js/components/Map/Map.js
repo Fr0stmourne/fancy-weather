@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import styles from './map.module.scss';
 
-console.log(styles.map__container);
-
 class Map extends Component {
   render() {
     return (
