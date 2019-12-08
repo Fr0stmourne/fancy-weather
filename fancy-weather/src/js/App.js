@@ -9,28 +9,30 @@ import Map from './components/Map/Map';
 import { getPhotosJSON, setBackground, getWeatherJSON, getCoordinatesJSON, getUserLocation } from './utils';
 import { updateForecast, updateLocation } from './actions';
 
-const onReloadHandler = async (weather, location) => {
-  const data = await getPhotosJSON(weather, location);
-  const chosenPhoto = data.photos.photo[Math.round(Math.random() * 10)];
-  setBackground(chosenPhoto.url_h);
-};
-
-const onSearchHandler = async town => {
-  const coordinatesJSON = (await getCoordinatesJSON(town)).results[0].geometry;
-  const coordinates = `${coordinatesJSON.lat}, ${coordinatesJSON.lng}`;
-  const data = await getWeatherJSON(coordinates);
-  console.log(data);
-};
-
 class App extends Component {
+  onSearchHandler = async town => {
+    const geocodingData = await getCoordinatesJSON(town);
+    const coordinatesObj = geocodingData.results[0].geometry;
+    const newLocation = {
+      city: geocodingData.results[0].components.city,
+      country: geocodingData.results[0].components.country_code.toUpperCase(),
+    };
+    this.props.onLocationUpdate(newLocation);
+    const coordinates = `${coordinatesObj.lat}, ${coordinatesObj.lng}`;
+    const newWeather = await getWeatherJSON(coordinates);
+    this.props.onWeatherUpdate(newWeather);
+  };
+
+  onReloadHandler = async (weather, location) => {
+    const data = await getPhotosJSON(weather, location);
+    const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.length)];
+    setBackground(chosenPhoto.url_h);
+  };
+
   async componentDidMount() {
-    // this.props.onWeatherUpdate(['cloudy', 'sunny', 'rainy']);
     const userLocation = await getUserLocation();
-    // console.log(this.props.location);
     this.props.onLocationUpdate(userLocation);
-    // console.log(this.props.location);
     const currentLocationWeather = await getWeatherJSON(userLocation.loc);
-    console.log(currentLocationWeather);
     this.props.onWeatherUpdate(currentLocationWeather);
   }
 
@@ -38,8 +40,8 @@ class App extends Component {
     return (
       <React.Fragment>
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
-        <Controls reloadBtnHandler={onReloadHandler}></Controls>
-        <Search searchBtnHandler={onSearchHandler}></Search>
+        <Controls reloadBtnHandler={this.onReloadHandler}></Controls>
+        <Search searchBtnHandler={this.onSearchHandler}></Search>
         <Dashboard
           location={this.props.location}
           todayForecast={this.props.todayForecast}
@@ -54,6 +56,8 @@ class App extends Component {
 function MapStateToProps(state) {
   return {
     forecasts: state.forecasts,
+    todayForecast: state.todayForecast,
+    location: state.location,
   };
 }
 
