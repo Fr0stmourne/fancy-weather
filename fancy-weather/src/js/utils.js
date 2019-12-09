@@ -35,11 +35,6 @@ const iconWeatherMapping = {
   wind: 'wind',
 };
 
-const unitsMapping = {
-  C: 'si',
-  F: 'us',
-};
-
 function getSeason(monthIndex) {
   switch (monthIndex) {
     case 11:
@@ -86,8 +81,8 @@ async function queryTemplate(link) {
 }
 
 export function setBackground(link) {
-  document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.3),
-  rgba(0,0,0,0.3)), url(${link})`;
+  document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
+  rgba(0,0,0,0.5)), url(${link})`;
 }
 
 export function getCoordsObjFromString(locationString) {
@@ -113,10 +108,8 @@ export async function getPhotosJSON(weather, month, { lat, lng }) {
   );
 }
 
-export async function getWeatherJSON(coords, tempScale) {
-  return queryTemplate(
-    `${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=${unitsMapping[tempScale]}`,
-  );
+export async function getWeatherJSON(coords) {
+  return queryTemplate(`${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=si`);
 }
 
 export async function getCoordinatesJSON(city = 'saint-petersburg') {

@@ -1,28 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DEFAULT_SCALE } from '../../utils';
 
 class TempToggler extends Component {
-  state = {
-    selectValue: DEFAULT_SCALE,
-  };
-
-  handleChange(evt) {
-    this.setState(
-      {
-        selectValue: evt.target.value,
-      },
-      () => {
-        this.props.tempScaleChangeHandler(this.state.selectValue);
-      },
-    );
-  }
-
   render() {
     return (
       <select
-        value={this.state.selectValue}
-        onChange={e => this.handleChange(e)}
+        defaultValue={this.props.tempScale}
+        onChange={e => this.props.tempScaleChangeHandler(e.target.value)}
         name=""
         id=""
         className="controls__temp"
@@ -36,6 +20,7 @@ class TempToggler extends Component {
 
 TempToggler.propTypes = {
   tempScaleChangeHandler: PropTypes.func,
+  tempScale: PropTypes.string,
 };
 
 export default TempToggler;
