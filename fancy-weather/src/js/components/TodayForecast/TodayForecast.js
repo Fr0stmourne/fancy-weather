@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import countriesMapping from '../../countriesMapping';
-import { getDayOfAWeek, getMonthName } from '../../utils';
+import { getDayOfAWeek, getMonthName, DEFAULT_ICON } from '../../utils';
+import styles from './today-forecast.module.scss';
 
 class TodayForecast extends Component {
+  componentDidMount() {
+    this.time = setInterval(this.props.onTimeTick, 1000);
+  }
+
   render() {
     const currentTimeDate = new Date(this.props.todayForecast.time * 1000);
+    const localizedTime = currentTimeDate
+      .toLocaleString({}, { timeZone: this.props.todayForecast.timezone })
+      .split(' ')[1];
     return (
       <React.Fragment>
         <h2 className="weather__title">
@@ -16,12 +24,13 @@ class TodayForecast extends Component {
             currentTimeDate.getMonth(),
           )}`}
         </p>
-        <time className="weather__time">
-          {/* add day formatting func cuz it can be like 15:5 instead of 15:05 */}
-          {currentTimeDate.getHours()}:{currentTimeDate.getMinutes()}
-        </time>
+        <time className="weather__time">{localizedTime}</time>
         <div className="weather__forecast">
-          <div className="weather__temperature"></div>
+          <div className="weather__temperature">{Math.round(this.props.todayForecast.temperature)}</div>
+          <img
+            src={`assets/img/${this.props.todayForecast.icon || DEFAULT_ICON}.png`}
+            className={styles.weather__icon}
+          />
           <div className="weather__details">
             Overcast
             <p className="weather__feels-like">
@@ -39,6 +48,7 @@ class TodayForecast extends Component {
 TodayForecast.propTypes = {
   location: PropTypes.object,
   todayForecast: PropTypes.object,
+  onTimeTick: PropTypes.func,
 };
 
 export default TodayForecast;

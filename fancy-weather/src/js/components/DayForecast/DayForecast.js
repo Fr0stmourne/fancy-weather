@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { getDayOfAWeek } from '../../utils';
+import { getDayOfAWeek, DEFAULT_ICON } from '../../utils';
 import styles from './day-forecast.module.scss';
-
-const DEFAULT_ICON = 'thermometer';
 
 class DayForecast extends Component {
   render() {

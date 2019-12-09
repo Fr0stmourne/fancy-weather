@@ -1,4 +1,4 @@
-import { UPDATE_FORECAST, UPDATE_LOCATION } from './actions';
+import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TIME } from './actions';
 
 const initialState = {
   forecasts: [
@@ -7,7 +7,14 @@ const initialState = {
     { time: 'unknown', temperatureHigh: 'unknown' },
   ],
   todayForecast: { time: 'unknown', temperatureHigh: 'unknown' },
-  location: {},
+  location: {
+    city: '',
+    country: '',
+    coordinates: {
+      lat: 0,
+      lng: 0,
+    },
+  },
 };
 
 function updateReducer(state = initialState, action) {
@@ -16,6 +23,8 @@ function updateReducer(state = initialState, action) {
       return { ...state, forecasts: action.forecastsList, todayForecast: action.todayForecast };
     case UPDATE_LOCATION:
       return { ...state, location: action.location };
+    case UPDATE_TIME:
+      return { ...state, todayForecast: { ...state.todayForecast, time: state.todayForecast.time + 1 } };
     default:
       return state;
   }

@@ -19,6 +19,8 @@ const months = [
   'December',
 ];
 
+export const DEFAULT_ICON = 'thermometer';
+
 export function getDayOfAWeek(dayIndex) {
   return weekDays[dayIndex];
 }
@@ -34,13 +36,20 @@ async function queryTemplate(link) {
   } catch (e) {
     throw new Error(e);
   }
-  // console.log(apiData);
   return apiData.json();
 }
 
 export function setBackground(link) {
   document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.3),
   rgba(0,0,0,0.3)), url(${link})`;
+}
+
+export function getCoordsObjFromString(locationString) {
+  const [lat, lng] = locationString.split(',').map(el => +el);
+  return {
+    lat,
+    lng,
+  };
 }
 
 export async function getPhotosJSON(weather = 'rainy') {
