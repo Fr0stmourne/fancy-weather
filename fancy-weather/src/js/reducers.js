@@ -1,4 +1,11 @@
-import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TIME } from './actions';
+import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TIME, UPDATE_TEMP_SCALE } from './actions';
+import LocalStorageProvider from './localStorageProvider';
+import { DEFAULT_ICON } from './utils';
+
+const unitsMapping = {
+  C: 'si',
+  F: 'us',
+};
 
 const initialState = {
   forecasts: [
@@ -6,7 +13,7 @@ const initialState = {
     { time: 'unknown', temperatureHigh: 'unknown' },
     { time: 'unknown', temperatureHigh: 'unknown' },
   ],
-  todayForecast: { time: 'unknown', temperatureHigh: 'unknown' },
+  todayForecast: { time: 0, temperature: 0, icon: DEFAULT_ICON, apparentTemperature: 0 },
   location: {
     city: '',
     country: '',
@@ -14,6 +21,10 @@ const initialState = {
       lat: 0,
       lng: 0,
     },
+  },
+  appSettings: {
+    language: LocalStorageProvider.getLanguage() || 'en',
+    tempScale: LocalStorageProvider.getTempScale() || unitsMapping.C,
   },
 };
 
@@ -25,6 +36,8 @@ function updateReducer(state = initialState, action) {
       return { ...state, location: action.location };
     case UPDATE_TIME:
       return { ...state, todayForecast: { ...state.todayForecast, time: state.todayForecast.time + 1 } };
+    case UPDATE_TEMP_SCALE:
+      return { ...state, appSettings: { ...state.appSettings, tempScale: unitsMapping[action.tempScale] } };
     default:
       return state;
   }

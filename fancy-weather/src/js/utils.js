@@ -36,6 +36,7 @@ async function queryTemplate(link) {
   } catch (e) {
     throw new Error(e);
   }
+  console.log(await apiData.json());
   return apiData.json();
 }
 
@@ -58,8 +59,10 @@ export async function getPhotosJSON(weather = 'rainy') {
   );
 }
 
-export async function getWeatherJSON(coords = '59.929227, 30.3294354') {
-  return queryTemplate(`${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=si`);
+export async function getWeatherJSON(coords, tempScale) {
+  return queryTemplate(
+    `${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=${tempScale}`,
+  );
 }
 
 export async function getCoordinatesJSON(city = 'saint-petersburg') {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import countriesMapping from '../../countriesMapping';
-import { getDayOfAWeek, getMonthName, DEFAULT_ICON } from '../../utils';
+import { getDayOfAWeek, getMonthName } from '../../utils';
 import styles from './today-forecast.module.scss';
 
 class TodayForecast extends Component {
@@ -27,10 +27,7 @@ class TodayForecast extends Component {
         <time className="weather__time">{localizedTime}</time>
         <div className="weather__forecast">
           <div className="weather__temperature">{Math.round(this.props.todayForecast.temperature)}</div>
-          <img
-            src={`assets/img/${this.props.todayForecast.icon || DEFAULT_ICON}.png`}
-            className={styles.weather__icon}
-          />
+          <img src={`assets/img/${this.props.todayForecast.icon}.png`} className={styles.weather__icon} />
           <div className="weather__details">
             Overcast
             <p className="weather__feels-like">

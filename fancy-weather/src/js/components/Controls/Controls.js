@@ -10,7 +10,7 @@ class Controls extends Component {
       <section className="controls">
         <ReloadBtn reloadBtnHandler={this.props.reloadBtnHandler} className="controls__reload-btn"></ReloadBtn>
         <LangSwitcher></LangSwitcher>
-        <TempToggler></TempToggler>
+        <TempToggler tempScaleChangeHandler={this.props.tempScaleChangeHandler}></TempToggler>
       </section>
     );
   }
@@ -19,6 +19,7 @@ class Controls extends Component {
 Controls.propTypes = {
   className: PropTypes.string,
   reloadBtnHandler: PropTypes.func,
+  tempScaleChangeHandler: PropTypes.func,
 };
 
 export default Controls;

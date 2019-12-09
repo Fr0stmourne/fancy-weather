@@ -14,9 +14,18 @@ import {
   getUserLocation,
   getCoordsObjFromString,
 } from './utils';
-import { updateForecast, updateLocation, updateTime } from './actions';
+import { updateForecast, updateLocation, updateTime, updateTempScale } from './actions';
 
 class App extends Component {
+  onTempScaleChangeHandler = async tempScale => {
+    const coordsString = `${this.props.location.coordinates.lat},${this.props.location.coordinates.lng}`;
+    this.props.onTempScaleChange(tempScale);
+    const weather = await getWeatherJSON(coordsString, this.props.appSettings.tempScale);
+    // console.log('NEW SCALE', this.props.appSettings.tempScale);
+    // console.log('NEW WEATHER', weather);
+    this.props.onWeatherUpdate(weather);
+  };
+
   onSearchHandler = async town => {
     const geocodingData = await getCoordinatesJSON(town);
     const coordinatesObj = geocodingData.results[0].geometry;
@@ -29,7 +38,7 @@ class App extends Component {
     };
     this.props.onLocationUpdate(newLocation);
     const coordinates = `${coordinatesObj.lat}, ${coordinatesObj.lng}`;
-    const newWeather = await getWeatherJSON(coordinates);
+    const newWeather = await getWeatherJSON(coordinates, this.props.appSettings.tempScale);
     this.props.onWeatherUpdate(newWeather);
   };
 
@@ -43,7 +52,7 @@ class App extends Component {
     const userLocation = await getUserLocation();
     userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
     this.props.onLocationUpdate(userLocation);
-    const currentLocationWeather = await getWeatherJSON(userLocation.loc);
+    const currentLocationWeather = await getWeatherJSON(userLocation.loc, this.props.appSettings.tempScale);
     this.props.onWeatherUpdate(currentLocationWeather);
   }
 
@@ -51,7 +60,10 @@ class App extends Component {
     return (
       <React.Fragment>
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
-        <Controls reloadBtnHandler={this.onReloadHandler}></Controls>
+        <Controls
+          tempScaleChangeHandler={this.onTempScaleChangeHandler}
+          reloadBtnHandler={this.onReloadHandler}
+        ></Controls>
         <Search searchBtnHandler={this.onSearchHandler}></Search>
         <Dashboard
           onTimeTick={this.props.onTimeTick}
@@ -70,6 +82,7 @@ function MapStateToProps(state) {
     forecasts: state.forecasts,
     todayForecast: state.todayForecast,
     location: state.location,
+    appSettings: state.appSettings,
   };
 }
 
@@ -78,6 +91,7 @@ function MapDispatchToProps(dispatch) {
     onWeatherUpdate: forecastsObj => dispatch(updateForecast(forecastsObj)),
     onLocationUpdate: location => dispatch(updateLocation(location)),
     onTimeTick: () => dispatch(updateTime()),
+    onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
   };
 }
 
@@ -86,8 +100,10 @@ App.propTypes = {
   onWeatherUpdate: PropTypes.func,
   onLocationUpdate: PropTypes.func,
   onTimeTick: PropTypes.func,
+  onTempScaleChange: PropTypes.func,
   todayForecast: PropTypes.object,
   location: PropTypes.object,
+  appSettings: PropTypes.object,
 };
 
 export default connect(MapStateToProps, MapDispatchToProps)(App);

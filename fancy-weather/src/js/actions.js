@@ -1,6 +1,7 @@
 export const UPDATE_FORECAST = 'UPDATE_FORECAST';
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
 export const UPDATE_TIME = 'UPDATE_TIME';
+export const UPDATE_TEMP_SCALE = 'UPDATE_TEMP_SCALE';
 
 export function updateForecast(forecasts) {
   return {
@@ -20,5 +21,12 @@ export function updateLocation(location) {
 export function updateTime() {
   return {
     type: UPDATE_TIME,
+  };
+}
+
+export function updateTempScale(tempScale) {
+  return {
+    type: UPDATE_TEMP_SCALE,
+    tempScale,
   };
 }
