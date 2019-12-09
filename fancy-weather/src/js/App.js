@@ -15,13 +15,11 @@ import {
   getCoordsObjFromString,
 } from './utils';
 import { updateForecast, updateLocation, updateTime, updateTempScale } from './actions';
+// import LocalStorageProvider from './localStorageProvider';
 
 class App extends Component {
   onTempScaleChangeHandler = async tempScale => {
-    // const coordsString = `${this.props.location.coordinates.lat},${this.props.location.coordinates.lng}`;
     this.props.onTempScaleChange(tempScale);
-    // const weather = await getWeatherJSON(coordsString, this.props.appSettings.tempScale);
-    // this.props.onWeatherUpdate(weather);
   };
 
   onSearchHandler = async town => {
@@ -40,8 +38,8 @@ class App extends Component {
     this.props.onWeatherUpdate(newWeather);
   };
 
-  onReloadHandler = async (weather, location) => {
-    const data = await getPhotosJSON(weather, location);
+  onReloadHandler = async (weather, month, location) => {
+    const data = await getPhotosJSON(weather, month, { lat: location.lat, lng: location.lng });
     const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.photo.length)];
     setBackground(chosenPhoto.url_h);
   };
@@ -49,11 +47,10 @@ class App extends Component {
   async componentDidMount() {
     const userLocation = await getUserLocation();
     userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
-
     this.props.onLocationUpdate(userLocation);
     const currentLocationWeather = await getWeatherJSON(userLocation.loc, this.props.appSettings.tempScale);
-    console.log(this.props.appSettings.tempScale);
     this.props.onWeatherUpdate(currentLocationWeather);
+    this.onReloadHandler(this.props.todayForecast.icon, this.props.todayForecast.time, this.props.location.coordinates);
   }
 
   render() {
@@ -61,6 +58,9 @@ class App extends Component {
       <React.Fragment>
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
         <Controls
+          time={this.props.todayForecast.time}
+          weather={this.props.todayForecast.icon}
+          location={this.props.location}
           tempScaleChangeHandler={this.onTempScaleChangeHandler}
           reloadBtnHandler={this.onReloadHandler}
         ></Controls>

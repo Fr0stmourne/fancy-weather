@@ -19,10 +19,49 @@ const months = [
   'December',
 ];
 
+const iconWeatherMapping = {
+  'clear-day': 'clear',
+  'clear-night': 'clear,night',
+  cloudy: 'cloudy',
+  fog: 'fog',
+  hail: 'hail',
+  'partly-cloudy-night': 'cloudy,night',
+  'partly-cloudy-day': 'cloudy,day',
+  rain: 'rain',
+  sleet: 'sleet',
+  snow: 'snow',
+  thunderstorm: 'thunderstorm',
+  tornado: 'tornado',
+  wind: 'wind',
+};
+
 const unitsMapping = {
   C: 'si',
   F: 'us',
 };
+
+function getSeason(monthIndex) {
+  switch (monthIndex) {
+    case 11:
+    case 0:
+    case 1:
+      return 'winter';
+    case 2:
+    case 3:
+    case 4:
+      return 'spring';
+    case 5:
+    case 6:
+    case 7:
+      return 'summer';
+    case 8:
+    case 9:
+    case 10:
+      return 'fall';
+    default:
+      return 'unknown season';
+  }
+}
 
 export const DEFAULT_SCALE = 'C';
 
@@ -67,9 +106,10 @@ export function displayTemperature(celsTemp, tempScale) {
   return tempScale === DEFAULT_SCALE ? celsTemp : convertToFahr(celsTemp);
 }
 
-export async function getPhotosJSON(weather = 'rainy') {
+export async function getPhotosJSON(weather, month, { lat, lng }) {
+  const season = getSeason(month);
   return queryTemplate(
-    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&nojsoncallback=1&format=json&tags=${weather}&extras=url_h`,
+    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[weather]},${season}`,
   );
 }
 
