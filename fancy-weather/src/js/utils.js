@@ -19,6 +19,13 @@ const months = [
   'December',
 ];
 
+const unitsMapping = {
+  C: 'si',
+  F: 'us',
+};
+
+export const DEFAULT_SCALE = 'C';
+
 export const DEFAULT_ICON = 'thermometer';
 
 export function getDayOfAWeek(dayIndex) {
@@ -36,7 +43,6 @@ async function queryTemplate(link) {
   } catch (e) {
     throw new Error(e);
   }
-  console.log(await apiData.json());
   return apiData.json();
 }
 
@@ -53,6 +59,14 @@ export function getCoordsObjFromString(locationString) {
   };
 }
 
+function convertToFahr(celsTemp) {
+  return (celsTemp * 9) / 5 + 32;
+}
+
+export function displayTemperature(celsTemp, tempScale) {
+  return tempScale === DEFAULT_SCALE ? celsTemp : convertToFahr(celsTemp);
+}
+
 export async function getPhotosJSON(weather = 'rainy') {
   return queryTemplate(
     `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&nojsoncallback=1&format=json&tags=${weather}&extras=url_h`,
@@ -61,7 +75,7 @@ export async function getPhotosJSON(weather = 'rainy') {
 
 export async function getWeatherJSON(coords, tempScale) {
   return queryTemplate(
-    `${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=${tempScale}`,
+    `${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=${unitsMapping[tempScale]}`,
   );
 }
 

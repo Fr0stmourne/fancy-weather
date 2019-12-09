@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import countriesMapping from '../../countriesMapping';
-import { getDayOfAWeek, getMonthName } from '../../utils';
+import { getDayOfAWeek, getMonthName, displayTemperature } from '../../utils';
 import styles from './today-forecast.module.scss';
 
 class TodayForecast extends Component {
@@ -26,12 +26,15 @@ class TodayForecast extends Component {
         </p>
         <time className="weather__time">{localizedTime}</time>
         <div className="weather__forecast">
-          <div className="weather__temperature">{Math.round(this.props.todayForecast.temperature)}</div>
+          <div className="weather__temperature">
+            {Math.round(displayTemperature(this.props.todayForecast.temperature, this.props.tempScale))}
+          </div>
           <img src={`assets/img/${this.props.todayForecast.icon}.png`} className={styles.weather__icon} />
           <div className="weather__details">
             Overcast
             <p className="weather__feels-like">
-              Feels like: {Math.round(this.props.todayForecast.apparentTemperature)}
+              Feels like:
+              {` ${Math.round(displayTemperature(this.props.todayForecast.apparentTemperature, this.props.tempScale))}`}
             </p>
             <p className="weather__wind">{Math.round(this.props.todayForecast.windSpeed)} m/s</p>
             <p className="weather__humidity">{this.props.todayForecast.humidity * 100}%</p>
@@ -46,6 +49,7 @@ TodayForecast.propTypes = {
   location: PropTypes.object,
   todayForecast: PropTypes.object,
   onTimeTick: PropTypes.func,
+  tempScale: PropTypes.string,
 };
 
 export default TodayForecast;

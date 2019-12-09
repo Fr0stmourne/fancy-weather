@@ -10,6 +10,7 @@ class Dashboard extends Component {
     return (
       <section className="app__weather weather">
         <TodayForecast
+          tempScale={this.props.appSettings.tempScale}
           onTimeTick={this.props.onTimeTick}
           location={this.props.location}
           todayForecast={this.props.todayForecast}
@@ -17,6 +18,7 @@ class Dashboard extends Component {
         <ul className={styles['weather__forecast-list']}>
           {this.props.futureForecasts.map((el, index) => (
             <DayForecast
+              tempScale={this.props.appSettings.tempScale}
               className={classnames(styles['weather__forecast-item'], this.props.className)}
               forecastData={el}
               key={index}
@@ -34,6 +36,7 @@ Dashboard.propTypes = {
   onTimeTick: PropTypes.func,
   className: PropTypes.string,
   location: PropTypes.object,
+  appSettings: PropTypes.object,
 };
 
 export default Dashboard;

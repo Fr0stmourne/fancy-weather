@@ -5,7 +5,6 @@ import { Map, Marker } from 'yandex-map-react';
 
 class WeatherMap extends Component {
   render() {
-    console.log(this.props.location.coordinates);
     const { lat, lng } = this.props.location.coordinates;
     return (
       <section className="app__map map">

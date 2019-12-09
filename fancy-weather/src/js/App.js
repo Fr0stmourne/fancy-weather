@@ -18,12 +18,10 @@ import { updateForecast, updateLocation, updateTime, updateTempScale } from './a
 
 class App extends Component {
   onTempScaleChangeHandler = async tempScale => {
-    const coordsString = `${this.props.location.coordinates.lat},${this.props.location.coordinates.lng}`;
+    // const coordsString = `${this.props.location.coordinates.lat},${this.props.location.coordinates.lng}`;
     this.props.onTempScaleChange(tempScale);
-    const weather = await getWeatherJSON(coordsString, this.props.appSettings.tempScale);
-    // console.log('NEW SCALE', this.props.appSettings.tempScale);
-    // console.log('NEW WEATHER', weather);
-    this.props.onWeatherUpdate(weather);
+    // const weather = await getWeatherJSON(coordsString, this.props.appSettings.tempScale);
+    // this.props.onWeatherUpdate(weather);
   };
 
   onSearchHandler = async town => {
@@ -51,8 +49,10 @@ class App extends Component {
   async componentDidMount() {
     const userLocation = await getUserLocation();
     userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
+
     this.props.onLocationUpdate(userLocation);
     const currentLocationWeather = await getWeatherJSON(userLocation.loc, this.props.appSettings.tempScale);
+    console.log(this.props.appSettings.tempScale);
     this.props.onWeatherUpdate(currentLocationWeather);
   }
 
@@ -66,6 +66,7 @@ class App extends Component {
         ></Controls>
         <Search searchBtnHandler={this.onSearchHandler}></Search>
         <Dashboard
+          appSettings={this.props.appSettings}
           onTimeTick={this.props.onTimeTick}
           location={this.props.location}
           todayForecast={this.props.todayForecast}
@@ -91,7 +92,9 @@ function MapDispatchToProps(dispatch) {
     onWeatherUpdate: forecastsObj => dispatch(updateForecast(forecastsObj)),
     onLocationUpdate: location => dispatch(updateLocation(location)),
     onTimeTick: () => dispatch(updateTime()),
-    onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
+    onTempScaleChange: tempScale => {
+      dispatch(updateTempScale(tempScale));
+    },
   };
 }
 

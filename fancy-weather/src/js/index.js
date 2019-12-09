@@ -7,7 +7,7 @@ import updateReducer from './reducers';
 import App from './App';
 
 const store = createStore(updateReducer);
-store.subscribe(() => console.log(store.getState()));
+// store.subscribe(() => console.log(store.getState()));
 
 const app = (
   <Provider store={store}>

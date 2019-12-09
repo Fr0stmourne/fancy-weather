@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { DEFAULT_SCALE } from '../../utils';
 
 class TempToggler extends Component {
-  constructor(props) {
-    super(props);
-    this.selectRef = React.createRef();
+  state = {
+    selectValue: DEFAULT_SCALE,
+  };
+
+  handleChange(evt) {
+    this.setState(
+      {
+        selectValue: evt.target.value,
+      },
+      () => {
+        this.props.tempScaleChangeHandler(this.state.selectValue);
+      },
+    );
   }
 
   render() {
     return (
       <select
-        ref={this.selectRef}
-        onChange={() => {
-          console.log('triggered', this.selectRef.current.value);
-          this.props.tempScaleChangeHandler(this.selectRef.current.value);
-        }}
+        value={this.state.selectValue}
+        onChange={e => this.handleChange(e)}
         name=""
         id=""
         className="controls__temp"
