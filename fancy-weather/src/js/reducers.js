@@ -1,4 +1,4 @@
-import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TIME, UPDATE_TEMP_SCALE } from './actions';
+import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TIME, UPDATE_TEMP_SCALE, UPDATE_LANG } from './actions';
 import LocalStorageProvider from './localStorageProvider';
 import { DEFAULT_ICON, DEFAULT_SCALE, DEFAULT_LANG } from './utils';
 
@@ -33,6 +33,8 @@ function updateReducer(state = initialState, action) {
       return { ...state, todayForecast: { ...state.todayForecast, time: state.todayForecast.time + 1 } };
     case UPDATE_TEMP_SCALE:
       return { ...state, appSettings: { ...state.appSettings, tempScale: action.tempScale } };
+    case UPDATE_LANG:
+      return { ...state, appSettings: { ...state.appSettings, language: action.language } };
     default:
       return state;
   }

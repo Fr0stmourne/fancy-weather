@@ -14,7 +14,7 @@ import {
   getUserLocation,
   getCoordsObjFromString,
 } from './utils';
-import { updateForecast, updateLocation, updateTime, updateTempScale } from './actions';
+import { updateForecast, updateLocation, updateTime, updateTempScale, updateLang } from './actions';
 // import LocalStorageProvider from './localStorageProvider';
 
 class App extends Component {
@@ -44,6 +44,11 @@ class App extends Component {
     setBackground(chosenPhoto.url_h);
   };
 
+  onLangChangeHandler = lang => {
+    console.log(1111111);
+    this.props.onLangChange(lang);
+  };
+
   async componentDidMount() {
     const userLocation = await getUserLocation();
     userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
@@ -65,6 +70,7 @@ class App extends Component {
           location={this.props.location}
           tempScaleChangeHandler={this.onTempScaleChangeHandler}
           reloadBtnHandler={this.onReloadHandler}
+          langChangeHandler={this.onLangChangeHandler}
         ></Controls>
         <Search searchBtnHandler={this.onSearchHandler}></Search>
         <Dashboard
@@ -94,8 +100,10 @@ function MapDispatchToProps(dispatch) {
     onWeatherUpdate: forecastsObj => dispatch(updateForecast(forecastsObj)),
     onLocationUpdate: location => dispatch(updateLocation(location)),
     onTimeTick: () => dispatch(updateTime()),
-    onTempScaleChange: tempScale => {
-      dispatch(updateTempScale(tempScale));
+    onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
+    onLangChange: lang => {
+      console.log(lang);
+      dispatch(updateLang(lang));
     },
   };
 }
@@ -106,6 +114,7 @@ App.propTypes = {
   onLocationUpdate: PropTypes.func,
   onTimeTick: PropTypes.func,
   onTempScaleChange: PropTypes.func,
+  onLangChange: PropTypes.func,
   todayForecast: PropTypes.object,
   location: PropTypes.object,
   appSettings: PropTypes.object,

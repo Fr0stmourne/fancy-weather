@@ -10,6 +10,7 @@ import LocalStorageProvider from './localStorageProvider';
 const store = createStore(updateReducer);
 store.subscribe(() => {
   LocalStorageProvider.setSettings(store.getState().appSettings);
+  console.log(store.getState());
 });
 
 const app = (
