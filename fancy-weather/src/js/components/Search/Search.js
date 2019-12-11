@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styles from './search.module.scss';
 
 class Search extends Component {
   constructor(props) {
@@ -9,16 +10,24 @@ class Search extends Component {
 
   render() {
     return (
-      <section className="app__search search">
-        <input ref={this.searchInputRef} className="search__input" type="search" name="location" id="search" />
+      <section className={styles.search}>
+        <input
+          placeholder={'Search city'}
+          ref={this.searchInputRef}
+          className={styles.search__input}
+          type="search"
+          name="location"
+          id="search"
+        />
         <button
-          className="search__btn"
+          className={styles.search__btn}
           onClick={() => {
             this.props.searchBtnHandler(this.searchInputRef.current.value || undefined);
           }}
         >
           Search
         </button>
+        <button className={styles.search__voice}></button>
       </section>
     );
   }

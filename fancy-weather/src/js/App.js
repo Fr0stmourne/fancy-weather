@@ -45,7 +45,6 @@ class App extends Component {
   };
 
   onLangChangeHandler = lang => {
-    console.log(1111111);
     this.props.onLangChange(lang);
   };
 
@@ -99,12 +98,12 @@ function MapDispatchToProps(dispatch) {
   return {
     onWeatherUpdate: forecastsObj => dispatch(updateForecast(forecastsObj)),
     onLocationUpdate: location => dispatch(updateLocation(location)),
-    onTimeTick: () => dispatch(updateTime()),
-    onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
-    onLangChange: lang => {
-      console.log(lang);
-      dispatch(updateLang(lang));
+    onTimeTick: () => {
+      dispatch(updateTime());
+      // console.log('dispatch');
     },
+    onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
+    onLangChange: lang => dispatch(updateLang(lang)),
   };
 }
 
