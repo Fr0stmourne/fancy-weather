@@ -50,7 +50,8 @@ class App extends Component {
     this.props.onLocationUpdate(userLocation);
     const currentLocationWeather = await getWeatherJSON(userLocation.loc, this.props.appSettings.tempScale);
     this.props.onWeatherUpdate(currentLocationWeather);
-    this.onReloadHandler(this.props.todayForecast.icon, this.props.todayForecast.time, this.props.location.coordinates);
+    const currentMonth = new Date(this.props.todayForecast.time * 1000).getMonth();
+    this.onReloadHandler(this.props.todayForecast.icon, currentMonth, this.props.location.coordinates);
   }
 
   render() {

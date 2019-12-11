@@ -105,7 +105,7 @@ export function displayTemperature(celsTemp, tempScale) {
 export async function getPhotosJSON(weather, month, { lat, lng }) {
   const season = getSeason(month);
   return queryTemplate(
-    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[weather]},${season}`,
+    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=all&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[weather]},${season}`,
   );
 }
 

@@ -4,9 +4,10 @@ import classNames from 'classnames';
 import styles from './reload-btn.module.scss';
 
 function ReloadBtn(props) {
+  const currentMonth = new Date(props.time * 1000).getMonth();
   return (
     <button
-      onClick={() => props.reloadBtnHandler(props.weather, props.time, props.location.coordinates)}
+      onClick={() => props.reloadBtnHandler(props.weather, currentMonth, props.location.coordinates)}
       className={classNames(styles['reload-btn'], props.className)}
     >
       Reload
