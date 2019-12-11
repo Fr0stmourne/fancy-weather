@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import styles from './search.module.scss';
 
 class Search extends Component {
@@ -27,7 +28,9 @@ class Search extends Component {
         >
           Search
         </button>
-        <button className={styles.search__voice}></button>
+        <button
+          className={classnames(styles.search__voice, window.SpeechRecognition ? '' : styles['search__voice--hide'])}
+        ></button>
       </section>
     );
   }

@@ -53,5 +53,9 @@ $input-width: 300px;
     background-repeat: no-repeat;
     background-size: 25px;
     border: 0;
+
+    &--hide {
+      display: none;
+    }
   }
 }
