@@ -5,9 +5,12 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import updateReducer from './reducers';
 import App from './App';
+import LocalStorageProvider from './localStorageProvider';
 
 const store = createStore(updateReducer);
-// store.subscribe(() => console.log(store.getState()));
+store.subscribe(() => {
+  LocalStorageProvider.setSettings(store.getState().appSettings);
+});
 
 const app = (
   <Provider store={store}>

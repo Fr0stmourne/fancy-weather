@@ -59,6 +59,7 @@ function getSeason(monthIndex) {
 }
 
 export const DEFAULT_SCALE = 'C';
+export const DEFAULT_LANG = 'en';
 
 export const DEFAULT_ICON = 'thermometer';
 

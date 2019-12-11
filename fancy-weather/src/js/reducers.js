@@ -1,6 +1,6 @@
 import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TIME, UPDATE_TEMP_SCALE } from './actions';
 import LocalStorageProvider from './localStorageProvider';
-import { DEFAULT_ICON, DEFAULT_SCALE } from './utils';
+import { DEFAULT_ICON, DEFAULT_SCALE, DEFAULT_LANG } from './utils';
 
 const initialState = {
   forecasts: [
@@ -18,8 +18,8 @@ const initialState = {
     },
   },
   appSettings: {
-    language: LocalStorageProvider.getLanguage() || 'en',
-    tempScale: LocalStorageProvider.getTempScale() || DEFAULT_SCALE,
+    language: LocalStorageProvider.getSettings() ? LocalStorageProvider.getSettings().language : DEFAULT_LANG,
+    tempScale: LocalStorageProvider.getSettings() ? LocalStorageProvider.getSettings().tempScale : DEFAULT_SCALE,
   },
 };
 
@@ -32,7 +32,6 @@ function updateReducer(state = initialState, action) {
     case UPDATE_TIME:
       return { ...state, todayForecast: { ...state.todayForecast, time: state.todayForecast.time + 1 } };
     case UPDATE_TEMP_SCALE:
-      LocalStorageProvider.setTempScale(action.tempScale);
       return { ...state, appSettings: { ...state.appSettings, tempScale: action.tempScale } };
     default:
       return state;

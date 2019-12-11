@@ -58,8 +58,7 @@ class App extends Component {
       <React.Fragment>
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
         <Controls
-          tempScale={this.props.appSettings.tempScale}
-          language={this.props.appSettings.language}
+          appSettings={this.props.appSettings}
           time={this.props.todayForecast.time}
           weather={this.props.todayForecast.icon}
           location={this.props.location}

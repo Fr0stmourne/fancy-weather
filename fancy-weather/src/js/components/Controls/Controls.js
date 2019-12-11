@@ -17,7 +17,7 @@ class Controls extends Component {
         ></ReloadBtn>
         <LangSwitcher></LangSwitcher>
         <TempToggler
-          tempScale={this.props.tempScale}
+          tempScale={this.props.appSettings.tempScale}
           tempScaleChangeHandler={this.props.tempScaleChangeHandler}
         ></TempToggler>
       </section>
@@ -33,7 +33,7 @@ Controls.propTypes = {
   weather: PropTypes.string,
   time: PropTypes.number,
   language: PropTypes.string,
-  tempScale: PropTypes.string,
+  appSettings: PropTypes.object,
 };
 
 export default Controls;

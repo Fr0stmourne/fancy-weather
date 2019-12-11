@@ -1,28 +1,19 @@
-const LANG_KEY = 'lang';
-const TEMP_SCALE_KEY = 'temp';
+const SETTINGS_KEY = 'appSettings';
 
 export default class LocalStorageProvider {
-  static setLanguage(lang) {
+  static getSettings() {
     try {
-      localStorage.setItem(LANG_KEY, lang);
+      return JSON.parse(localStorage.getItem(SETTINGS_KEY));
     } catch (e) {
       throw new Error(`LocalStorage Error: ${e}`);
     }
   }
 
-  static getLanguage() {
-    return localStorage.getItem(LANG_KEY);
-  }
-
-  static setTempScale(temp) {
+  static setSettings(settings) {
     try {
-      localStorage.setItem(TEMP_SCALE_KEY, temp);
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     } catch (e) {
       throw new Error(`LocalStorage Error: ${e}`);
     }
-  }
-
-  static getTempScale() {
-    return localStorage.getItem(TEMP_SCALE_KEY);
   }
 }

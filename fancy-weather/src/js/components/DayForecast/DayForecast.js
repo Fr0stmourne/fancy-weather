@@ -6,13 +6,11 @@ import styles from './day-forecast.module.scss';
 
 class DayForecast extends Component {
   render() {
-    // console.log(this.props.tempScale);
+    const temperature = Math.round(displayTemperature(this.props.forecastData.temperatureHigh, this.props.tempScale));
     return (
       <li className={classnames(styles['day-forecast'], this.props.className)}>
         <h3 className="day-forecast__title">{getDayOfAWeek(new Date(this.props.forecastData.time * 1000).getDay())}</h3>
-        <div className="day-forecast__temp">
-          {Math.round(displayTemperature(this.props.forecastData.temperatureHigh, this.props.tempScale)) || undefined}
-        </div>
+        <div className="day-forecast__temp">{Number.isNaN(temperature) ? undefined : temperature}</div>
         <img
           className={styles['day-forecast__icon']}
           src={`assets/img/${this.props.forecastData.icon || DEFAULT_ICON}.png`}
