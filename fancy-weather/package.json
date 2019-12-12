@@ -65,6 +65,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
+    "react-speech-recognition": "^2.0.4",
     "react-yandex-maps": "^4.2.0",
     "redux": "^4.0.4",
     "yandex-map-react": "^1.1.1"

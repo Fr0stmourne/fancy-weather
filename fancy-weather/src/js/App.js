@@ -22,6 +22,7 @@ class App extends Component {
   };
 
   onSearchHandler = async town => {
+    console.log(town);
     const geocodingData = await getCoordinatesJSON(town);
     const coordinatesObj = geocodingData.results[0].geometry;
     const newLocation = {
@@ -39,8 +40,6 @@ class App extends Component {
 
   onReloadHandler = async (weather, month, location) => {
     const data = await getPhotosJSON(weather, month, { lat: location.lat, lng: location.lng });
-    console.log(weather, month);
-
     const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.photo.length)];
     setBackground(chosenPhoto.url_h);
   };
