@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import styles from './temp-toggler.module.scss';
 
 class TempToggler extends Component {
   render() {
@@ -9,10 +11,10 @@ class TempToggler extends Component {
         onChange={e => this.props.tempScaleChangeHandler(e.target.value)}
         name=""
         id=""
-        className="controls__temp"
+        className={classnames(styles['temp-toggler'], this.props.className)}
       >
-        <option value="C">C</option>
-        <option value="F">F</option>
+        <option value="C">C&deg;</option>
+        <option value="F">F&deg;</option>
       </select>
     );
   }
@@ -21,6 +23,7 @@ class TempToggler extends Component {
 TempToggler.propTypes = {
   tempScaleChangeHandler: PropTypes.func,
   tempScale: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default TempToggler;

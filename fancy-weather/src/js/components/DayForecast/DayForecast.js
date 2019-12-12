@@ -10,7 +10,7 @@ class DayForecast extends Component {
     return (
       <li className={classnames(styles['day-forecast'], this.props.className)}>
         <h3 className="day-forecast__title">{getDayOfAWeek(new Date(this.props.forecastData.time * 1000).getDay())}</h3>
-        <div className="day-forecast__temp">{Number.isNaN(temperature) ? undefined : temperature}</div>
+        <div className="day-forecast__temp">{Number.isNaN(temperature) ? undefined : temperature}&deg;</div>
         <img
           className={styles['day-forecast__icon']}
           src={`assets/img/${this.props.forecastData.icon || DEFAULT_ICON}.png`}
