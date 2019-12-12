@@ -22,11 +22,11 @@ class App extends Component {
   };
 
   onSearchHandler = async town => {
-    console.log(town);
     const geocodingData = await getCoordinatesJSON(town);
     const coordinatesObj = geocodingData.results[0].geometry;
+    const cityField = geocodingData.results[0].components;
     const newLocation = {
-      city: geocodingData.results.find(result => Object.keys(result.components).includes('city')).components.city,
+      city: cityField.city || cityField.county || cityField.state || cityField.village,
       country: geocodingData.results
         .find(result => Object.keys(result.components).includes('country_code'))
         .components.country_code.toUpperCase(),
