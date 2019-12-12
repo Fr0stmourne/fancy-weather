@@ -1,0 +1,16 @@
+.controls {
+  height: 50px;
+  display: flex;
+
+  &__reload-btn {
+    width: 50px;
+    margin-right: 20px;
+  }
+
+  &__lang-switcher {
+    width: 70px;
+    margin-right: 20px;
+  }
+
+  // &__temp-toggler {}
+}

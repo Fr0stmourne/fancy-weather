@@ -10,7 +10,7 @@ function ReloadBtn(props) {
       onClick={() => props.reloadBtnHandler(props.weather, currentMonth, props.location.coordinates)}
       className={classNames(styles['reload-btn'], props.className)}
     >
-      Reload
+      <span className="visually-hidden">Reload</span>
     </button>
   );
 }

@@ -39,6 +39,11 @@ $input-width: 300px;
     border-radius: 0 5px 5px 0;
     font-weight: bold;
     text-transform: uppercase;
+    transition: 0.3s;
+
+    &:hover {
+      background-color: darken($light-gray, 20%);
+    }
   }
 
   &__voice {

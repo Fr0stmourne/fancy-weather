@@ -1,6 +1,5 @@
 export const UPDATE_FORECAST = 'UPDATE_FORECAST';
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
-export const UPDATE_TIME = 'UPDATE_TIME';
 export const UPDATE_TEMP_SCALE = 'UPDATE_TEMP_SCALE';
 export const UPDATE_LANG = 'UPDATE_LANG';
 
@@ -16,12 +15,6 @@ export function updateLocation(location) {
   return {
     type: UPDATE_LOCATION,
     location,
-  };
-}
-
-export function updateTime() {
-  return {
-    type: UPDATE_TIME,
   };
 }
 

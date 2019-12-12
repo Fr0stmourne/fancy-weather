@@ -1,3 +1,16 @@
+$gray: rgba(#B4B8BB, 0.4);
+
 .reload-btn {
-  background-color: orange;
+  border: 0;
+  border-radius: 5px;
+  background-color: $gray;
+  background-image: url("/assets/img/reload.png");
+  background-repeat: no-repeat;
+  background-position: center 5px;
+  background-size: 100%;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: darken($gray, 20%);
+  }
 }

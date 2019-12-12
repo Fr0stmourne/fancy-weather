@@ -29,7 +29,10 @@ class Search extends Component {
           Search
         </button>
         <button
-          className={classnames(styles.search__voice, window.SpeechRecognition ? '' : styles['search__voice--hide'])}
+          className={classnames(
+            styles.search__voice,
+            window.SpeechRecognition in window ? '' : styles['search__voice--hide'],
+          )}
         ></button>
       </section>
     );

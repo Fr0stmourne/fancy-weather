@@ -14,8 +14,7 @@ import {
   getUserLocation,
   getCoordsObjFromString,
 } from './utils';
-import { updateForecast, updateLocation, updateTime, updateTempScale, updateLang } from './actions';
-// import LocalStorageProvider from './localStorageProvider';
+import { updateForecast, updateLocation, updateTempScale, updateLang } from './actions';
 
 class App extends Component {
   onTempScaleChangeHandler = async tempScale => {
@@ -40,6 +39,8 @@ class App extends Component {
 
   onReloadHandler = async (weather, month, location) => {
     const data = await getPhotosJSON(weather, month, { lat: location.lat, lng: location.lng });
+    console.log(weather, month);
+
     const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.photo.length)];
     setBackground(chosenPhoto.url_h);
   };
@@ -74,7 +75,6 @@ class App extends Component {
         <Search searchBtnHandler={this.onSearchHandler}></Search>
         <Dashboard
           appSettings={this.props.appSettings}
-          onTimeTick={this.props.onTimeTick}
           location={this.props.location}
           todayForecast={this.props.todayForecast}
           futureForecasts={this.props.forecasts}
@@ -98,10 +98,6 @@ function MapDispatchToProps(dispatch) {
   return {
     onWeatherUpdate: forecastsObj => dispatch(updateForecast(forecastsObj)),
     onLocationUpdate: location => dispatch(updateLocation(location)),
-    onTimeTick: () => {
-      dispatch(updateTime());
-      // console.log('dispatch');
-    },
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
   };

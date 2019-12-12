@@ -5,12 +5,34 @@ import { getDayOfAWeek, getMonthName, displayTemperature } from '../../utils';
 import styles from './today-forecast.module.scss';
 
 class TodayForecast extends Component {
+  state = {
+    time: this.props.todayForecast.time,
+  };
+
+  tick = () => {
+    this.setState(state => ({
+      time: state.time + 1,
+    }));
+  };
+
   componentDidMount() {
-    this.time = setInterval(this.props.onTimeTick, 1000);
+    this.timer = setInterval(this.tick, 1000);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.todayForecast.time !== prevProps.todayForecast.time) {
+      this.setState({
+        time: this.props.todayForecast.time,
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   render() {
-    const currentTimeDate = new Date(this.props.todayForecast.time * 1000);
+    const currentTimeDate = new Date(this.state.time * 1000);
     const localizedTime = currentTimeDate
       .toLocaleString({}, { timeZone: this.props.todayForecast.timezone })
       .split(' ')[1];
