@@ -1,4 +1,4 @@
-import { getCoordinatesJSON, setBackground, getPhotosJSON } from './utils';
+import { setBackground, getPhotosJSON, getUserLocation, getCoordsObjFromString, getWeatherJSON } from './utils';
 
 export const UPDATE_FORECAST = 'UPDATE_FORECAST';
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
@@ -6,11 +6,20 @@ export const UPDATE_TEMP_SCALE = 'UPDATE_TEMP_SCALE';
 export const UPDATE_LANG = 'UPDATE_LANG';
 export const UPDATE_BG = 'UPDATE_BG';
 
-export function updateForecast(forecasts) {
+function updateForecast(weather) {
   return {
     type: UPDATE_FORECAST,
-    forecastsList: forecasts.daily.data.slice(0, 3),
-    todayForecast: { ...forecasts.currently, timezone: forecasts.timezone },
+    forecastsList: weather.daily.data.slice(0, 3),
+    todayForecast: { ...weather.currently, timezone: weather.timezone },
+  };
+}
+
+export function updateWeather(location) {
+  return async dispatch => {
+    console.log(location);
+    const currentLocationWeather = await getWeatherJSON(location);
+    console.log(currentLocationWeather);
+    dispatch(updateForecast(currentLocationWeather));
   };
 }
 
@@ -41,18 +50,26 @@ export function updateBackground() {
   };
 }
 
-export function updateLocationAsync(town) {
+// export function updateLocationAsync(town) {
+//   return async dispatch => {
+//     const geocodingData = await getCoordinatesJSON(town);
+//     const cityField = geocodingData.results[0].components;
+//     const newLocation = {
+//       city: cityField.city || cityField.county || cityField.state || cityField.village,
+//       country: geocodingData.results
+//         .find(result => Object.keys(result.components).includes('country_code'))
+//         .components.country_code.toUpperCase(),
+//       coordinates: geocodingData.results[0].geometry,
+//     };
+//     dispatch(updateLocation(newLocation));
+//   };
+// }
+
+export function getInitialLocation() {
   return async dispatch => {
-    const geocodingData = await getCoordinatesJSON(town);
-    const cityField = geocodingData.results[0].components;
-    const newLocation = {
-      city: cityField.city || cityField.county || cityField.state || cityField.village,
-      country: geocodingData.results
-        .find(result => Object.keys(result.components).includes('country_code'))
-        .components.country_code.toUpperCase(),
-      coordinates: geocodingData.results[0].geometry,
-    };
-    dispatch(updateLocation(newLocation));
+    const userLocation = await getUserLocation();
+    userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
+    dispatch(updateLocation(userLocation));
   };
 }
 

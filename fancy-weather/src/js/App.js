@@ -6,8 +6,15 @@ import Controls from './components/Controls/Controls';
 import Search from './components/Search/Search';
 import Dashboard from './components/Dashboard/Dashboard';
 import WeatherMap from './components/Map/Map';
-import { getWeatherJSON, getCoordinatesJSON, getUserLocation, getCoordsObjFromString } from './utils';
-import { updateForecast, updateLocation, updateTempScale, updateLang, updateBackgroundPhoto } from './actions';
+import { getCoordinatesJSON } from './utils';
+import {
+  updateLocation,
+  updateTempScale,
+  updateLang,
+  updateBackgroundPhoto,
+  getInitialLocation,
+  updateWeather,
+} from './actions';
 
 class App extends Component {
   onTempScaleChangeHandler = async tempScale => {
@@ -27,8 +34,7 @@ class App extends Component {
     };
     this.props.onLocationUpdate(newLocation);
     const coordinates = `${coordinatesObj.lat}, ${coordinatesObj.lng}`;
-    const newWeather = await getWeatherJSON(coordinates, this.props.appSettings.tempScale);
-    this.props.onWeatherUpdate(newWeather);
+    await this.props.onWeatherUpdate(coordinates);
   };
 
   onLangChangeHandler = lang => {
@@ -43,11 +49,8 @@ class App extends Component {
   );
 
   async componentDidMount() {
-    const userLocation = await getUserLocation();
-    userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
-    this.props.onLocationUpdate(userLocation);
-    const currentLocationWeather = await getWeatherJSON(userLocation.loc, this.props.appSettings.tempScale);
-    this.props.onWeatherUpdate(currentLocationWeather);
+    await this.props.onInitialLocationUpdate();
+    await this.props.onWeatherUpdate(this.props.location.loc);
     this.onBgReload();
   }
 
@@ -57,7 +60,6 @@ class App extends Component {
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
         <Controls
           appSettings={this.props.appSettings}
-          location={this.props.location}
           tempScaleChangeHandler={this.onTempScaleChangeHandler}
           reloadBtnHandler={this.onBgReload}
           langChangeHandler={this.onLangChangeHandler}
@@ -86,8 +88,9 @@ function MapStateToProps(state) {
 
 function MapDispatchToProps(dispatch) {
   return {
-    onWeatherUpdate: forecastsObj => dispatch(updateForecast(forecastsObj)),
+    onWeatherUpdate: location => dispatch(updateWeather(location)),
     onLocationUpdate: location => dispatch(updateLocation(location)),
+    onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
     onBgReload(weather, month, location) {
@@ -101,6 +104,7 @@ App.propTypes = {
   onWeatherUpdate: PropTypes.func,
   onLocationUpdate: PropTypes.func,
   onTimeTick: PropTypes.func,
+  onInitialLocationUpdate: PropTypes.func,
   onTempScaleChange: PropTypes.func,
   onLangChange: PropTypes.func,
   onBgReload: PropTypes.func,
