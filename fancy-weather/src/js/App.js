@@ -6,39 +6,21 @@ import Controls from './components/Controls/Controls';
 import Search from './components/Search/Search';
 import Dashboard from './components/Dashboard/Dashboard';
 import WeatherMap from './components/Map/Map';
-import { getCoordinatesJSON } from './utils';
 import {
-  updateLocation,
   updateTempScale,
   updateLang,
   updateBackgroundPhoto,
   getInitialLocation,
   updateWeather,
+  getLocation,
 } from './actions';
 
 class App extends Component {
-  onTempScaleChangeHandler = async tempScale => {
-    this.props.onTempScaleChange(tempScale);
-  };
-
   onSearchHandler = async town => {
-    const geocodingData = await getCoordinatesJSON(town);
-    const coordinatesObj = geocodingData.results[0].geometry;
-    const cityField = geocodingData.results[0].components;
-    const newLocation = {
-      city: cityField.city || cityField.county || cityField.state || cityField.village,
-      country: geocodingData.results
-        .find(result => Object.keys(result.components).includes('country_code'))
-        .components.country_code.toUpperCase(),
-      coordinates: geocodingData.results[0].geometry,
-    };
-    this.props.onLocationUpdate(newLocation);
-    const coordinates = `${coordinatesObj.lat}, ${coordinatesObj.lng}`;
-    await this.props.onWeatherUpdate(coordinates);
-  };
-
-  onLangChangeHandler = lang => {
-    this.props.onLangChange(lang);
+    await this.props.onLocationUpdate(town);
+    const { coordinates } = this.props.location;
+    const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
+    await this.props.onWeatherUpdate(coordinatesStr);
   };
 
   onBgReload = this.props.onBgReload.bind(
@@ -60,9 +42,9 @@ class App extends Component {
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
         <Controls
           appSettings={this.props.appSettings}
-          tempScaleChangeHandler={this.onTempScaleChangeHandler}
+          tempScaleChangeHandler={this.props.onTempScaleChange}
           reloadBtnHandler={this.onBgReload}
-          langChangeHandler={this.onLangChangeHandler}
+          langChangeHandler={this.props.onLangChange}
         ></Controls>
         <Search searchBtnHandler={this.onSearchHandler}></Search>
         <Dashboard
@@ -89,7 +71,7 @@ function MapStateToProps(state) {
 function MapDispatchToProps(dispatch) {
   return {
     onWeatherUpdate: location => dispatch(updateWeather(location)),
-    onLocationUpdate: location => dispatch(updateLocation(location)),
+    onLocationUpdate: town => dispatch(getLocation(town)),
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
