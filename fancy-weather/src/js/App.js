@@ -6,15 +6,8 @@ import Controls from './components/Controls/Controls';
 import Search from './components/Search/Search';
 import Dashboard from './components/Dashboard/Dashboard';
 import WeatherMap from './components/Map/Map';
-import {
-  getPhotosJSON,
-  setBackground,
-  getWeatherJSON,
-  getCoordinatesJSON,
-  getUserLocation,
-  getCoordsObjFromString,
-} from './utils';
-import { updateForecast, updateLocation, updateTempScale, updateLang } from './actions';
+import { getWeatherJSON, getCoordinatesJSON, getUserLocation, getCoordsObjFromString } from './utils';
+import { updateForecast, updateLocation, updateTempScale, updateLang, updateBackgroundPhoto } from './actions';
 
 class App extends Component {
   onTempScaleChangeHandler = async tempScale => {
@@ -38,15 +31,16 @@ class App extends Component {
     this.props.onWeatherUpdate(newWeather);
   };
 
-  onReloadHandler = async (weather, month, location) => {
-    const data = await getPhotosJSON(weather, month, { lat: location.lat, lng: location.lng });
-    const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.photo.length)];
-    setBackground(chosenPhoto.url_h);
-  };
-
   onLangChangeHandler = lang => {
     this.props.onLangChange(lang);
   };
+
+  onBgReload = this.props.onBgReload.bind(
+    null,
+    this.props.todayForecast.icon,
+    new Date(this.props.todayForecast.time * 1000).getMonth(),
+    this.props.location.coordinates,
+  );
 
   async componentDidMount() {
     const userLocation = await getUserLocation();
@@ -54,8 +48,7 @@ class App extends Component {
     this.props.onLocationUpdate(userLocation);
     const currentLocationWeather = await getWeatherJSON(userLocation.loc, this.props.appSettings.tempScale);
     this.props.onWeatherUpdate(currentLocationWeather);
-    const currentMonth = new Date(this.props.todayForecast.time * 1000).getMonth();
-    this.onReloadHandler(this.props.todayForecast.icon, currentMonth, this.props.location.coordinates);
+    this.onBgReload();
   }
 
   render() {
@@ -64,11 +57,9 @@ class App extends Component {
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
         <Controls
           appSettings={this.props.appSettings}
-          time={this.props.todayForecast.time}
-          weather={this.props.todayForecast.icon}
           location={this.props.location}
           tempScaleChangeHandler={this.onTempScaleChangeHandler}
-          reloadBtnHandler={this.onReloadHandler}
+          reloadBtnHandler={this.onBgReload}
           langChangeHandler={this.onLangChangeHandler}
         ></Controls>
         <Search searchBtnHandler={this.onSearchHandler}></Search>
@@ -99,6 +90,9 @@ function MapDispatchToProps(dispatch) {
     onLocationUpdate: location => dispatch(updateLocation(location)),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
+    onBgReload(weather, month, location) {
+      dispatch(updateBackgroundPhoto(weather, month, location));
+    },
   };
 }
 
@@ -109,6 +103,7 @@ App.propTypes = {
   onTimeTick: PropTypes.func,
   onTempScaleChange: PropTypes.func,
   onLangChange: PropTypes.func,
+  onBgReload: PropTypes.func,
   todayForecast: PropTypes.object,
   location: PropTypes.object,
   appSettings: PropTypes.object,

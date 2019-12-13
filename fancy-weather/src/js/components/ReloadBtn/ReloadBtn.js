@@ -4,10 +4,11 @@ import classNames from 'classnames';
 import styles from './reload-btn.module.scss';
 
 function ReloadBtn(props) {
-  const currentMonthIndex = new Date(props.time * 1000).getMonth();
+  // const currentMonthIndex = new Date(props.time * 1000).getMonth();
   return (
     <button
-      onClick={() => props.reloadBtnHandler(props.weather, currentMonthIndex, props.location.coordinates)}
+      // onClick={() => props.reloadBtnHandler(props.weather, currentMonthIndex, props.location.coordinates)}
+      onClick={props.reloadBtnHandler}
       className={classNames(styles['reload-btn'], props.className)}
     >
       <span className="visually-hidden">Reload</span>
