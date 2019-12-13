@@ -1,23 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from './temp-toggler.module.scss';
 
-class TempToggler extends Component {
-  render() {
-    return (
-      <select
-        defaultValue={this.props.tempScale}
-        onChange={e => this.props.tempScaleChangeHandler(e.target.value)}
-        name=""
-        id=""
-        className={classnames(styles['temp-toggler'], this.props.className)}
-      >
-        <option value="C">C&deg;</option>
-        <option value="F">F&deg;</option>
-      </select>
-    );
-  }
+function TempToggler(props) {
+  return (
+    <select
+      defaultValue={props.tempScale}
+      onChange={e => props.tempScaleChangeHandler(e.target.value)}
+      name=""
+      id=""
+      className={classnames(styles['temp-toggler'], props.className)}
+    >
+      <option value="C">C&deg;</option>
+      <option value="F">F&deg;</option>
+    </select>
+  );
 }
 
 TempToggler.propTypes = {

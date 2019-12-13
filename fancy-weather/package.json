@@ -68,6 +68,7 @@
     "react-speech-recognition": "^2.0.4",
     "react-yandex-maps": "^4.2.0",
     "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
     "yandex-map-react": "^1.1.1"
   }
 }
