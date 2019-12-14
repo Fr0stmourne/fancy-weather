@@ -24,9 +24,7 @@ function updateForecast(weather) {
 
 export function updateWeather(location, lang) {
   return async dispatch => {
-    // console.log('fetching with', lang, location);
     const currentLocationWeather = await getWeatherJSON(location, lang);
-    // console.log(currentLocationWeather);
     dispatch(updateForecast(currentLocationWeather));
   };
 }
@@ -56,13 +54,11 @@ export function updateBackground() {
 }
 
 export function getLocation(town, language) {
-  // const COUNTRY_CODE = 'country_code';
   return async dispatch => {
     const geocodingData = await getCoordinatesJSON(town, language);
-    console.log('opencage', geocodingData);
     const cityField = geocodingData.results[0].components;
     const newLocation = {
-      city: cityField.city || cityField.county || cityField.state || cityField.village,
+      city: cityField.city || cityField.town || cityField.county || cityField.state || cityField.village,
       country: cityField.country,
       coordinates: geocodingData.results[0].geometry,
     };
@@ -77,7 +73,6 @@ export function getInitialLocation() {
     const [lat, lng] = userLocation.loc.split(',').map(el => +el);
     userLocation.coordinates = { lat, lng };
     userLocation.country = countriesMapping[userLocation.country];
-    console.log('city', userLocation);
     dispatch(updateLocation(userLocation));
   };
 }

@@ -103,8 +103,6 @@ export async function getWeatherJSON(coords, lang = 'en') {
 }
 
 export async function getCoordinatesJSON(city = 'saint-petersburg', lang = 'en') {
-  console.log('going for opencage with lang', lang);
-
   return queryTemplate(
     `${proxyURL}https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${ACCESS_GEOCODING_KEY}&pretty=1&no_annotations=1&language=${lang}`,
   );
