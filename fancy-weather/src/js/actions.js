@@ -2,10 +2,11 @@ import {
   setBackground,
   getPhotosJSON,
   getUserLocation,
-  getCoordsObjFromString,
+  // getCoordsObjFromString,
   getWeatherJSON,
   getCoordinatesJSON,
 } from './utils';
+import countriesMapping from './countriesMapping';
 
 export const UPDATE_FORECAST = 'UPDATE_FORECAST';
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
@@ -23,8 +24,9 @@ function updateForecast(weather) {
 
 export function updateWeather(location, lang) {
   return async dispatch => {
-    console.log('fetching with', lang);
+    // console.log('fetching with', lang, location);
     const currentLocationWeather = await getWeatherJSON(location, lang);
+    // console.log(currentLocationWeather);
     dispatch(updateForecast(currentLocationWeather));
   };
 }
@@ -44,10 +46,7 @@ export function updateTempScale(tempScale) {
 }
 
 export function updateLang(language) {
-  return {
-    type: UPDATE_LANG,
-    language,
-  };
+  return { type: UPDATE_LANG, language };
 }
 
 export function updateBackground() {
@@ -56,16 +55,15 @@ export function updateBackground() {
   };
 }
 
-export function getLocation(town) {
-  const COUNTRY_CODE = 'country_code';
+export function getLocation(town, language) {
+  // const COUNTRY_CODE = 'country_code';
   return async dispatch => {
-    const geocodingData = await getCoordinatesJSON(town);
+    const geocodingData = await getCoordinatesJSON(town, language);
+    console.log('opencage', geocodingData);
     const cityField = geocodingData.results[0].components;
     const newLocation = {
       city: cityField.city || cityField.county || cityField.state || cityField.village,
-      country: geocodingData.results
-        .find(result => Object.keys(result.components).includes(COUNTRY_CODE))
-        .components.country_code.toUpperCase(),
+      country: cityField.country,
       coordinates: geocodingData.results[0].geometry,
     };
 
@@ -76,7 +74,10 @@ export function getLocation(town) {
 export function getInitialLocation() {
   return async dispatch => {
     const userLocation = await getUserLocation();
-    userLocation.coordinates = getCoordsObjFromString(userLocation.loc);
+    const [lat, lng] = userLocation.loc.split(',').map(el => +el);
+    userLocation.coordinates = { lat, lng };
+    userLocation.country = countriesMapping[userLocation.country];
+    console.log('city', userLocation);
     dispatch(updateLocation(userLocation));
   };
 }

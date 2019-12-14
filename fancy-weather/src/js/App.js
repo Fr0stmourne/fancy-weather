@@ -17,7 +17,7 @@ import {
 
 class App extends Component {
   onSearch = async town => {
-    await this.props.onLocationUpdate(town);
+    await this.props.onLocationUpdate(town, this.props.appSettings.language);
     const { coordinates } = this.props.location;
     const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
     await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
@@ -30,14 +30,16 @@ class App extends Component {
     this.props.location.coordinates,
   );
 
-  onLangChange = lang => {
-    this.props.onLangChange(lang);
-    this.onSearch(this.props.location.city);
+  onLangChange = async lang => {
+    await this.props.onLangChange(lang, this.props.location);
+    await this.onSearch(this.props.location.city);
   };
 
   async componentDidMount() {
+    console.log('starting');
+
     await this.props.onInitialLocationUpdate();
-    await this.props.onWeatherUpdate(this.props.appSettings.language, this.props.location.loc);
+    await this.onSearch(this.props.location.city);
     this.onBgReload();
   }
 
@@ -78,7 +80,7 @@ function MapDispatchToProps(dispatch) {
     onWeatherUpdate(lang, location) {
       dispatch(updateWeather(location, lang));
     },
-    onLocationUpdate: town => dispatch(getLocation(town)),
+    onLocationUpdate: (city, lang) => dispatch(getLocation(city, lang)),
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),

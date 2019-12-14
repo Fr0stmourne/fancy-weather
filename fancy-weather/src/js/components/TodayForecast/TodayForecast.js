@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import countriesMapping from '../../countriesMapping';
 import Time from '../Time/Time';
 import { displayTemperature } from '../../utils';
 import styles from './today-forecast.module.scss';
@@ -38,7 +37,7 @@ class TodayForecast extends Component {
     return (
       <React.Fragment>
         <h2 className="weather__title">
-          {this.props.location.city}, {countriesMapping[this.props.location.country]}
+          {this.props.location.city}, {this.props.location.country}
         </h2>
         <Time appSettings={this.props.appSettings} time={this.state.time} />
         <div className={styles.weather__forecast}>
