@@ -7,7 +7,7 @@ import styles from './dashboard.module.scss';
 
 function Dashboard(props) {
   return (
-    <section className="app__weather weather">
+    <section className={classnames(styles.weather, props.className)}>
       <TodayForecast
         tempScale={props.appSettings.tempScale}
         onTimeTick={props.onTimeTick}

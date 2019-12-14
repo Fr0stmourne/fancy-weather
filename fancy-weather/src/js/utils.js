@@ -69,7 +69,7 @@ async function queryTemplate(link) {
 }
 
 export function setBackground(link) {
-  document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
+  document.querySelector('#app').style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
   rgba(0,0,0,0.5)), url(${link})`;
 }
 

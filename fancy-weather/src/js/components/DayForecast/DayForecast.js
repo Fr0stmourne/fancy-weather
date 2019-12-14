@@ -11,7 +11,7 @@ function DayForecast(props) {
       <h3 className="day-forecast__title">
         {getDayOfAWeek(new Date(props.forecastData.time * 1000).getDay(), props.appSettings.language)}
       </h3>
-      <div className="day-forecast__temp">{Number.isNaN(temperature) ? undefined : temperature}&deg;</div>
+      <div className={styles['day-forecast__temp']}>{Number.isNaN(temperature) ? undefined : temperature}&deg;</div>
       <img
         className={styles['day-forecast__icon']}
         src={`assets/img/${props.forecastData.icon || DEFAULT_ICON}.png`}

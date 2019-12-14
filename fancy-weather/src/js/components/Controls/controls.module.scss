@@ -16,4 +16,8 @@
     width: 70px;
     margin-right: 20px;
   }
+
+  @media (max-width: 750px) {
+    grid-column: 1 / 3;
+  }
 }

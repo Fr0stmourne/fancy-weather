@@ -1,14 +1,29 @@
+@import '../scss/utils/variables.scss';
+
 .app {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: max-content max-content;
-  grid-row-gap: 100px;
+  grid-row-gap: 70px;
+  grid-column-gap: 50px;
   box-sizing: border-box;
-  padding: 30px 100px 0;
+  padding: 30px 50px 0;
   margin: 0 auto;
   max-width: 1600px;
   height: 100vh;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+
+  @media (max-width: $desktop-width) {
+    grid-row-gap: 30px;
+  }
+
+  @media (max-width: $tablet-width) {
+    height: auto;
+  }
+
+  @media (max-width: 500px) {
+    padding: 20px 20px 0;
+  }
 }
