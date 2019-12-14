@@ -13,6 +13,7 @@ function Dashboard(props) {
         onTimeTick={props.onTimeTick}
         location={props.location}
         todayForecast={props.todayForecast}
+        appSettings={props.appSettings}
       ></TodayForecast>
       <ul className={styles['weather__forecast-list']}>
         {props.futureForecasts.map((el, index) => (
@@ -21,6 +22,7 @@ function Dashboard(props) {
             className={classnames(styles['weather__forecast-item'], props.className)}
             forecastData={el}
             key={index}
+            appSettings={props.appSettings}
           ></DayForecast>
         ))}
       </ul>

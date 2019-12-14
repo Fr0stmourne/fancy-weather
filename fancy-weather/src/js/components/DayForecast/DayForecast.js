@@ -8,7 +8,9 @@ function DayForecast(props) {
   const temperature = Math.round(displayTemperature(props.forecastData.temperatureHigh, props.tempScale));
   return (
     <li className={classnames(styles['day-forecast'], props.className)}>
-      <h3 className="day-forecast__title">{getDayOfAWeek(new Date(props.forecastData.time * 1000).getDay())}</h3>
+      <h3 className="day-forecast__title">
+        {getDayOfAWeek(new Date(props.forecastData.time * 1000).getDay(), props.appSettings.language)}
+      </h3>
       <div className="day-forecast__temp">{Number.isNaN(temperature) ? undefined : temperature}&deg;</div>
       <img
         className={styles['day-forecast__icon']}
@@ -22,6 +24,7 @@ DayForecast.propTypes = {
   forecastData: PropTypes.object,
   className: PropTypes.string,
   tempScale: PropTypes.string,
+  appSettings: PropTypes.object,
 };
 
 export default DayForecast;

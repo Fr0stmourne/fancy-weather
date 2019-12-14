@@ -14,7 +14,6 @@ function LangSwitcher(props) {
     >
       <option value="en">En</option>
       <option value="ru">Ru</option>
-      <option value="be">Be</option>
     </select>
   );
 }

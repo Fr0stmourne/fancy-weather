@@ -16,11 +16,11 @@ import {
 } from './actions';
 
 class App extends Component {
-  onSearchHandler = async town => {
+  onSearch = async town => {
     await this.props.onLocationUpdate(town);
     const { coordinates } = this.props.location;
     const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
-    await this.props.onWeatherUpdate(coordinatesStr);
+    await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
   };
 
   onBgReload = this.props.onBgReload.bind(
@@ -30,9 +30,14 @@ class App extends Component {
     this.props.location.coordinates,
   );
 
+  onLangChange = lang => {
+    this.props.onLangChange(lang);
+    this.onSearch(this.props.location.city);
+  };
+
   async componentDidMount() {
     await this.props.onInitialLocationUpdate();
-    await this.props.onWeatherUpdate(this.props.location.loc);
+    await this.props.onWeatherUpdate(this.props.appSettings.language, this.props.location.loc);
     this.onBgReload();
   }
 
@@ -44,16 +49,16 @@ class App extends Component {
           appSettings={this.props.appSettings}
           tempScaleChangeHandler={this.props.onTempScaleChange}
           reloadBtnHandler={this.onBgReload}
-          langChangeHandler={this.props.onLangChange}
+          langChangeHandler={this.onLangChange}
         ></Controls>
-        <Search searchBtnHandler={this.onSearchHandler}></Search>
+        <Search searchBtnHandler={this.onSearch} appSettings={this.props.appSettings}></Search>
         <Dashboard
           appSettings={this.props.appSettings}
           location={this.props.location}
           todayForecast={this.props.todayForecast}
           futureForecasts={this.props.forecasts}
         ></Dashboard>
-        <WeatherMap location={this.props.location}></WeatherMap>
+        <WeatherMap location={this.props.location} appSettings={this.props.appSettings}></WeatherMap>
       </React.Fragment>
     );
   }
@@ -70,7 +75,9 @@ function MapStateToProps(state) {
 
 function MapDispatchToProps(dispatch) {
   return {
-    onWeatherUpdate: location => dispatch(updateWeather(location)),
+    onWeatherUpdate(lang, location) {
+      dispatch(updateWeather(location, lang));
+    },
     onLocationUpdate: town => dispatch(getLocation(town)),
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),

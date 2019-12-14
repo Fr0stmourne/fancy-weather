@@ -4,6 +4,7 @@ import countriesMapping from '../../countriesMapping';
 import Time from '../Time/Time';
 import { displayTemperature } from '../../utils';
 import styles from './today-forecast.module.scss';
+import translations from '../../translations/translations';
 
 class TodayForecast extends Component {
   state = {
@@ -33,21 +34,22 @@ class TodayForecast extends Component {
   }
 
   render() {
+    const translationJSON = translations[this.props.appSettings.language];
     return (
       <React.Fragment>
         <h2 className="weather__title">
           {this.props.location.city}, {countriesMapping[this.props.location.country]}
         </h2>
-        <Time time={this.state.time} />
+        <Time appSettings={this.props.appSettings} time={this.state.time} />
         <div className={styles.weather__forecast}>
           <div className={styles.weather__temperature}>
             {Math.round(displayTemperature(this.props.todayForecast.temperature, this.props.tempScale))}&deg;
           </div>
           <img src={`assets/img/${this.props.todayForecast.icon}.png`} className={styles.weather__icon} />
           <div className={styles.weather__details}>
-            Overcast
+            {this.props.todayForecast.summary}
             <p className="weather__feels-like">
-              Feels like:
+              {translationJSON.overcast.feelsLike}:
               {` ${Math.round(displayTemperature(this.props.todayForecast.apparentTemperature, this.props.tempScale))}`}
               &deg;
             </p>
@@ -65,6 +67,7 @@ TodayForecast.propTypes = {
   todayForecast: PropTypes.object,
   onTimeTick: PropTypes.func,
   tempScale: PropTypes.string,
+  appSettings: PropTypes.object,
 };
 
 export default TodayForecast;

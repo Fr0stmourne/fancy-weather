@@ -10,9 +10,10 @@ function Time(props) {
   return (
     <React.Fragment>
       <p className="weather__day">
-        {`${getDayOfAWeek(currentTimeDate.getDay())} ${currentTimeDate.getDate()} ${getMonthName(
-          currentTimeDate.getMonth(),
-        )}`}
+        {`${getDayOfAWeek(
+          currentTimeDate.getDay(),
+          props.appSettings.language,
+        )} ${currentTimeDate.getDate()} ${getMonthName(currentTimeDate.getMonth(), props.appSettings.language)}`}
       </p>
       <time className="weather__time">{localizedTime}</time>
     </React.Fragment>
@@ -23,6 +24,7 @@ Time.propTypes = {
   className: PropTypes.string,
   time: PropTypes.number,
   timezone: PropTypes.string,
+  appSettings: PropTypes.object,
 };
 
 export default Time;

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import SpeechRecognition from 'react-speech-recognition';
 import styles from './search.module.scss';
+import translations from '../../translations/translations';
 
 class Search extends Component {
   constructor(props) {
@@ -21,10 +22,11 @@ class Search extends Component {
   }
 
   render() {
+    const translationJSON = translations[this.props.appSettings.language];
     return (
       <section className={styles.search}>
         <input
-          placeholder={'Search city'}
+          placeholder={translationJSON.search.placeholder}
           ref={this.searchInputRef}
           className={styles.search__input}
           type="search"
@@ -37,7 +39,7 @@ class Search extends Component {
             this.props.searchBtnHandler(this.searchInputRef.current.value || undefined);
           }}
         >
-          Search
+          {translationJSON.search.button}
         </button>
         <button
           onClick={() => this.props.startListening()}
@@ -54,6 +56,7 @@ class Search extends Component {
 Search.propTypes = {
   searchBtnHandler: PropTypes.func,
   finalTranscript: PropTypes.string,
+  appSettings: PropTypes.object,
   resetTranscript: PropTypes.func,
   browserSupportsSpeechRecognition: PropTypes.bool,
   startListening: PropTypes.func,

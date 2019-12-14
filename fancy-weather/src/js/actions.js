@@ -21,11 +21,10 @@ function updateForecast(weather) {
   };
 }
 
-export function updateWeather(location) {
+export function updateWeather(location, lang) {
   return async dispatch => {
-    // console.log(location);
-    const currentLocationWeather = await getWeatherJSON(location);
-    // console.log(currentLocationWeather);
+    console.log('fetching with', lang);
+    const currentLocationWeather = await getWeatherJSON(location, lang);
     dispatch(updateForecast(currentLocationWeather));
   };
 }

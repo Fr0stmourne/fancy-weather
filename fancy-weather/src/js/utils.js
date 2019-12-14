@@ -1,23 +1,10 @@
+import translations from './translations/translations';
+
 const ACCESS_PHOTOS_KEY = '5cb2e43d6429d9be2ec68ef4f1bd86e3';
 const ACCESS_WEATHER_KEY = '19d9bc6a1e14802827f4384c9bacfa45';
 const ACCESS_GEOCODING_KEY = '89f190daada24d6b9f13b38376d75c02';
 const ACCESS_IP_KEY = '94fe768a1c789c';
 const proxyURL = 'https://cors-anywhere.herokuapp.com/';
-const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
 
 const iconWeatherMapping = {
   'clear-day': 'clear',
@@ -63,12 +50,12 @@ export const DEFAULT_LANG = 'en';
 
 export const DEFAULT_ICON = 'thermometer';
 
-export function getDayOfAWeek(dayIndex) {
-  return weekDays[dayIndex];
+export function getDayOfAWeek(dayIndex, language) {
+  return translations[language].days[dayIndex];
 }
 
-export function getMonthName(monthIndex) {
-  return months[monthIndex];
+export function getMonthName(monthIndex, language) {
+  return translations[language].months[monthIndex];
 }
 
 async function queryTemplate(link) {
@@ -109,13 +96,15 @@ export async function getPhotosJSON(weather, month, { lat, lng }) {
   );
 }
 
-export async function getWeatherJSON(coords) {
-  return queryTemplate(`${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=ru&units=si`);
+export async function getWeatherJSON(coords, lang = 'en') {
+  return queryTemplate(
+    `${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=${lang}&units=si`,
+  );
 }
 
-export async function getCoordinatesJSON(city = 'saint-petersburg') {
+export async function getCoordinatesJSON(city = 'saint-petersburg', lang = 'en') {
   return queryTemplate(
-    `${proxyURL}https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${ACCESS_GEOCODING_KEY}&pretty=1&no_annotations=1&language=en`,
+    `${proxyURL}https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${ACCESS_GEOCODING_KEY}&pretty=1&no_annotations=1&language=${lang}`,
   );
 }
 
