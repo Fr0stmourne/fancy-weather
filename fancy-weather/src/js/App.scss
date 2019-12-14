@@ -11,9 +11,7 @@
   margin: 0 auto;
   max-width: 1600px;
   height: 100vh;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+
 
   @media (max-width: $desktop-width) {
     grid-row-gap: 30px;

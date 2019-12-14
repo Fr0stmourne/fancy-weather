@@ -9,12 +9,13 @@ button {
 }
 
 body {
-  background-size: cover;
-  background-repeat: no-repeat;
+  min-width: 320px;
   color: white;
   background-color: black;
   font-family: 'Montserrat', sans-serif;
-  height: 100vh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .visually-hidden {
