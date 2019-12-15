@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { Map, Marker } from 'yandex-map-react';
 import { Map } from 'react-yandex-maps';
 import styles from './map.module.scss';
 import translations from '../../translations/translations';
 
-const SEPARATOR = '.';
-
-function formatCoords(coordinate) {
-  const coordinatesArr = coordinate.toString().split(SEPARATOR);
-  return `${coordinatesArr[0]}°${coordinatesArr[1]}'`;
+function convertToMinutes(degValue) {
+  return Math.round((degValue / 100) * 60);
 }
 
-// const langMapping = {
-//   'en': 'en'
-// }
+function formatCoords(coordinate) {
+  const SEPARATOR = '.';
+  const coordinatesArr = coordinate.toString().split(SEPARATOR);
+  return `${coordinatesArr[0]}°${convertToMinutes(+coordinatesArr[1])}'`;
+}
 
 function WeatherMap(props) {
   const { lat, lng } = props.location.coordinates;
