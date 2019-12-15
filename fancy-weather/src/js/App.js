@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { YMaps } from 'react-yandex-maps';
 import Controls from './components/Controls/Controls';
 import Search from './components/Search/Search';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -42,8 +43,13 @@ class App extends Component {
   }
 
   render() {
+    const langMap = {
+      en: 'en_RU',
+      ru: 'ru_RU',
+    };
+    const lang = langMap[this.props.appSettings.language];
     return (
-      <React.Fragment>
+      <YMaps key={lang} query={{ lang }}>
         <h1 className="app__title visually-hidden">Fancy Weather</h1>
         <Controls
           appSettings={this.props.appSettings}
@@ -59,7 +65,7 @@ class App extends Component {
           futureForecasts={this.props.forecasts}
         ></Dashboard>
         <WeatherMap location={this.props.location} appSettings={this.props.appSettings}></WeatherMap>
-      </React.Fragment>
+      </YMaps>
     );
   }
 }

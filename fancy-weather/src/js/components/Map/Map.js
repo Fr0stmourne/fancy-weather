@@ -12,8 +12,11 @@ function formatCoords(coordinate) {
   return `${coordinatesArr[0]}°${coordinatesArr[1]}'`;
 }
 
+// const langMapping = {
+//   'en': 'en'
+// }
+
 function WeatherMap(props) {
-  console.log(styles);
   const { lat, lng } = props.location.coordinates;
   const translationJSON = translations[props.appSettings.language];
   return (
