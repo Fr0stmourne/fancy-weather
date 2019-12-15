@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const PATHS = {
   src: path.join(__dirname, '../src'),
@@ -136,6 +137,7 @@ module.exports = {
         to: `${PATHS.assets}img`,
       },
     ]),
+    new FaviconsWebpackPlugin(`${PATHS.src}/img/clouds.favicon.png`),
     new CopyWebpackPlugin([
       {
         from: `${PATHS.src}/fonts`,

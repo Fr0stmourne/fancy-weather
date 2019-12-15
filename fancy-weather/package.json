@@ -61,6 +61,7 @@
     "classnames": "^2.2.6",
     "core-js": "^3.4.5",
     "emotion": "^10.0.23",
+    "favicons-webpack-plugin": "^1.0.2",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
