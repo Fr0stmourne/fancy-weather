@@ -22,6 +22,11 @@ const iconWeatherMapping = {
   wind: 'wind',
 };
 
+export const langMapping = {
+  en: 'en_RU',
+  ru: 'ru_RU',
+};
+
 function getSeason(monthIndex) {
   switch (monthIndex) {
     case 11:

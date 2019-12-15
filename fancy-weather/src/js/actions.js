@@ -1,11 +1,4 @@
-import {
-  setBackground,
-  getPhotosJSON,
-  getUserLocation,
-  // getCoordsObjFromString,
-  getWeatherJSON,
-  getCoordinatesJSON,
-} from './utils';
+import { setBackground, getPhotosJSON, getUserLocation, getWeatherJSON, getCoordinatesJSON } from './utils';
 import countriesMapping from './countriesMapping';
 
 export const UPDATE_FORECAST = 'UPDATE_FORECAST';
@@ -13,6 +6,14 @@ export const UPDATE_LOCATION = 'UPDATE_LOCATION';
 export const UPDATE_TEMP_SCALE = 'UPDATE_TEMP_SCALE';
 export const UPDATE_LANG = 'UPDATE_LANG';
 export const UPDATE_BG = 'UPDATE_BG';
+export const UPDATE_PRELOADER_STATUS = 'UPDATE_PRELOADER_STATUS';
+
+export function updatePreloader(booleanStatus) {
+  return {
+    type: UPDATE_PRELOADER_STATUS,
+    isLoading: booleanStatus,
+  };
+}
 
 function updateForecast(weather) {
   return {
@@ -24,8 +25,10 @@ function updateForecast(weather) {
 
 export function updateWeather(location, lang) {
   return async dispatch => {
+    dispatch(updatePreloader(true));
     const currentLocationWeather = await getWeatherJSON(location, lang);
     dispatch(updateForecast(currentLocationWeather));
+    dispatch(updatePreloader(false));
   };
 }
 
@@ -55,6 +58,7 @@ export function updateBackground() {
 
 export function getLocation(town, language) {
   return async dispatch => {
+    dispatch(updatePreloader(true));
     const geocodingData = await getCoordinatesJSON(town, language);
     const cityField = geocodingData.results[0].components;
     const newLocation = {
@@ -64,6 +68,7 @@ export function getLocation(town, language) {
     };
 
     dispatch(updateLocation(newLocation));
+    dispatch(updatePreloader(false));
   };
 }
 
@@ -79,9 +84,11 @@ export function getInitialLocation() {
 
 export function updateBackgroundPhoto(weather, monthIndex, location) {
   return async dispatch => {
+    dispatch(updatePreloader(true));
     const data = await getPhotosJSON(weather, monthIndex, { lat: location.lat, lng: location.lng });
     const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.photo.length)];
     setBackground(chosenPhoto.url_h);
     dispatch(updateBackground());
+    dispatch(updatePreloader(false));
   };
 }

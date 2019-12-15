@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import './App.scss';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { YMaps } from 'react-yandex-maps';
+import { ClimbingBoxLoader } from 'react-spinners';
+import styles from './App.module.scss';
 import Controls from './components/Controls/Controls';
 import Search from './components/Search/Search';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -15,6 +16,7 @@ import {
   updateWeather,
   getLocation,
 } from './actions';
+import { langMapping } from './utils';
 
 class App extends Component {
   onSearch = async town => {
@@ -43,29 +45,36 @@ class App extends Component {
   }
 
   render() {
-    const langMap = {
-      en: 'en_RU',
-      ru: 'ru_RU',
-    };
-    const lang = langMap[this.props.appSettings.language];
+    const lang = langMapping[this.props.appSettings.language];
+
     return (
-      <YMaps key={lang} query={{ lang }}>
-        <h1 className="app__title visually-hidden">Fancy Weather</h1>
-        <Controls
-          appSettings={this.props.appSettings}
-          tempScaleChangeHandler={this.props.onTempScaleChange}
-          reloadBtnHandler={this.onBgReload}
-          langChangeHandler={this.onLangChange}
-        ></Controls>
-        <Search searchBtnHandler={this.onSearch} appSettings={this.props.appSettings}></Search>
-        <Dashboard
-          appSettings={this.props.appSettings}
-          location={this.props.location}
-          todayForecast={this.props.todayForecast}
-          futureForecasts={this.props.forecasts}
-        ></Dashboard>
-        <WeatherMap location={this.props.location} appSettings={this.props.appSettings}></WeatherMap>
-      </YMaps>
+      <React.Fragment>
+        {this.props.isLoading && (
+          <div className={styles.preloader}>
+            <ClimbingBoxLoader size={70} color={'#4C5255'} loading={this.props.isLoading} />
+          </div>
+        )}
+
+        <YMaps key={lang} query={{ lang }}>
+          <section className={styles['main-container']}>
+            <h1 className="visually-hidden">Fancy Weather</h1>
+            <Controls
+              appSettings={this.props.appSettings}
+              tempScaleChangeHandler={this.props.onTempScaleChange}
+              reloadBtnHandler={this.onBgReload}
+              langChangeHandler={this.onLangChange}
+            ></Controls>
+            <Search searchBtnHandler={this.onSearch} appSettings={this.props.appSettings}></Search>
+            <Dashboard
+              appSettings={this.props.appSettings}
+              location={this.props.location}
+              todayForecast={this.props.todayForecast}
+              futureForecasts={this.props.forecasts}
+            ></Dashboard>
+            <WeatherMap location={this.props.location} appSettings={this.props.appSettings}></WeatherMap>
+          </section>
+        </YMaps>
+      </React.Fragment>
     );
   }
 }
@@ -76,6 +85,7 @@ function MapStateToProps(state) {
     todayForecast: state.todayForecast,
     location: state.location,
     appSettings: state.appSettings,
+    isLoading: state.isLoading,
   };
 }
 
@@ -106,6 +116,7 @@ App.propTypes = {
   todayForecast: PropTypes.object,
   location: PropTypes.object,
   appSettings: PropTypes.object,
+  isLoading: PropTypes.bool,
 };
 
 export default connect(MapStateToProps, MapDispatchToProps)(App);
