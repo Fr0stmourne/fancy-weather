@@ -1,12 +1,13 @@
 import translations from './translations/translations';
 
 const ACCESS_PHOTOS_KEY = '5cb2e43d6429d9be2ec68ef4f1bd86e3';
+// const UNSPLASH_KEY = `bbd7d091469d1bb74d894f08f1ef8a5d2cbd36a1ad3a02f712e4354c909d7d9a`;
 const ACCESS_WEATHER_KEY = '19d9bc6a1e14802827f4384c9bacfa45';
 const ACCESS_GEOCODING_KEY = '89f190daada24d6b9f13b38376d75c02';
 const ACCESS_IP_KEY = '94fe768a1c789c';
 const proxyURL = 'https://cors-anywhere.herokuapp.com/';
 
-const iconWeatherMapping = {
+export const iconWeatherMapping = {
   'clear-day': 'clear',
   'clear-night': 'clear,night',
   cloudy: 'cloudy',
@@ -96,8 +97,12 @@ export function displayTemperature(celsTemp, tempScale) {
 
 export async function getPhotosJSON(weather, month, { lat, lng }) {
   const season = getSeason(month);
+  const defaultWeather = 'clear';
+
   return queryTemplate(
-    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[weather]},${season}`,
+    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[
+      weather
+    ] || defaultWeather},${season}`,
   );
 }
 

@@ -86,7 +86,9 @@ export function updateBackgroundPhoto(weather, monthIndex, location) {
   return async dispatch => {
     dispatch(updatePreloader(true));
     const data = await getPhotosJSON(weather, monthIndex, { lat: location.lat, lng: location.lng });
-    const chosenPhoto = data.photos.photo[Math.round(Math.random() * data.photos.photo.length)];
+    const chosenPhoto = data.photos.photo.filter(obj => Object.keys(obj).includes('url_h'))[
+      Math.round(Math.random() * data.photos.photo.length)
+    ];
     setBackground(chosenPhoto.url_h);
     dispatch(updateBackground());
     dispatch(updatePreloader(false));

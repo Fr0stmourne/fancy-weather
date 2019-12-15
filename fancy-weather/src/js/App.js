@@ -26,12 +26,13 @@ class App extends Component {
     await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
   };
 
-  onBgReload = this.props.onBgReload.bind(
-    null,
-    this.props.todayForecast.icon,
-    new Date(this.props.todayForecast.time * 1000).getMonth(),
-    this.props.location.coordinates,
-  );
+  onBgReload = () => {
+    this.props.onBgReload(
+      this.props.todayForecast.icon,
+      new Date(this.props.todayForecast.time * 1000).getMonth(),
+      this.props.location.coordinates,
+    );
+  };
 
   onLangChange = async lang => {
     await this.props.onLangChange(lang, this.props.location);
