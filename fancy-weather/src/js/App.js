@@ -29,7 +29,7 @@ class App extends Component {
   onBgReload = () => {
     this.props.onBgReload(
       this.props.todayForecast.icon,
-      new Date(this.props.todayForecast.time * 1000).getMonth(),
+      this.props.todayForecast.time,
       this.props.location.coordinates,
     );
   };
@@ -99,8 +99,8 @@ function MapDispatchToProps(dispatch) {
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
-    onBgReload(weather, month, location) {
-      dispatch(updateBackgroundPhoto(weather, month, location));
+    onBgReload(weather, time, location) {
+      dispatch(updateBackgroundPhoto(weather, time, location));
     },
   };
 }

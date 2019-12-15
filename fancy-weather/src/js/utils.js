@@ -60,6 +60,13 @@ export function getDayOfAWeek(dayIndex, language) {
   return translations[language].days[dayIndex];
 }
 
+export function getTimeOfDay(hour) {
+  if ((hour >= 0 && hour <= 5) || hour >= 22) return 'night';
+  if (hour > 5 && hour <= 11) return 'morning';
+  if (hour > 11 && hour <= 15) return 'afternoon';
+  return 'evening';
+}
+
 export function getMonthName(monthIndex, language) {
   return translations[language].months[monthIndex];
 }
@@ -95,14 +102,20 @@ export function displayTemperature(celsTemp, tempScale) {
   return tempScale === DEFAULT_SCALE ? celsTemp : convertToFahr(celsTemp);
 }
 
-export async function getPhotosJSON(weather, month, { lat, lng }) {
+export async function getPhotosJSON(weather, month, hour, { lat, lng }) {
   const season = getSeason(month);
+  const timeOfDay = getTimeOfDay(hour);
   const defaultWeather = 'clear';
+  console.log(
+    `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[
+      weather
+    ] || defaultWeather},${season},${timeOfDay}`,
+  );
 
   return queryTemplate(
     `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[
       weather
-    ] || defaultWeather},${season}`,
+    ] || defaultWeather},${season},${timeOfDay}`,
   );
 }
 
