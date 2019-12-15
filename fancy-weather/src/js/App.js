@@ -50,8 +50,8 @@ class App extends Component {
     return (
       <React.Fragment>
         {this.props.isLoading && (
-          <div className={styles.preloader}>
-            <ClimbingBoxLoader size={70} color={'#4C5255'} loading={this.props.isLoading} />
+          <div className={styles['preloader-container']}>
+            <ClimbingBoxLoader size={50} color={'#4C5255'} loading={this.props.isLoading} />
           </div>
         )}
 
