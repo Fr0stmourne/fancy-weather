@@ -17,6 +17,7 @@ import {
   getLocation,
 } from './actions';
 import { langMapping } from './utils';
+import ErrorPopup from './components/ErrorPopup/ErrorPopup';
 
 class App extends Component {
   onSearch = async town => {
@@ -73,6 +74,7 @@ class App extends Component {
               futureForecasts={this.props.forecasts}
             ></Dashboard>
             <WeatherMap location={this.props.location} appSettings={this.props.appSettings}></WeatherMap>
+            <ErrorPopup isHidden={!this.props.isError} appSettings={this.props.appSettings}></ErrorPopup>
           </section>
         </YMaps>
       </React.Fragment>
@@ -87,6 +89,7 @@ function MapStateToProps(state) {
     location: state.location,
     appSettings: state.appSettings,
     isLoading: state.isLoading,
+    isError: state.isError,
   };
 }
 
@@ -118,6 +121,7 @@ App.propTypes = {
   location: PropTypes.object,
   appSettings: PropTypes.object,
   isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
 };
 
 export default connect(MapStateToProps, MapDispatchToProps)(App);

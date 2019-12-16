@@ -1,4 +1,12 @@
-import { UPDATE_FORECAST, UPDATE_LOCATION, UPDATE_TEMP_SCALE, UPDATE_LANG, UPDATE_PRELOADER_STATUS } from './actions';
+import {
+  UPDATE_FORECAST,
+  UPDATE_LOCATION,
+  UPDATE_TEMP_SCALE,
+  UPDATE_LANG,
+  UPDATE_PRELOADER_STATUS,
+  BG_FETCH_FAIL,
+  BG_FETCH_SUCCESS,
+} from './actions';
 import LocalStorageProvider from './localStorageProvider';
 import { DEFAULT_ICON, DEFAULT_SCALE, DEFAULT_LANG } from './utils';
 
@@ -22,6 +30,7 @@ const initialState = {
     tempScale: LocalStorageProvider.getSettings() ? LocalStorageProvider.getSettings().tempScale : DEFAULT_SCALE,
   },
   isLoading: true,
+  isError: false,
 };
 
 function updateReducer(state = initialState, action) {
@@ -36,6 +45,10 @@ function updateReducer(state = initialState, action) {
       return { ...state, appSettings: { ...state.appSettings, language: action.language } };
     case UPDATE_PRELOADER_STATUS:
       return { ...state, isLoading: action.isLoading };
+    case BG_FETCH_FAIL:
+      return { ...state, isError: true };
+    case BG_FETCH_SUCCESS:
+      return { ...state, isError: false };
     default:
       return state;
   }

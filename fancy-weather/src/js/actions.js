@@ -1,4 +1,13 @@
-import { setBackground, getPhotosJSON, getUserLocation, getWeatherJSON, getCoordinatesJSON } from './utils';
+import {
+  setBackground,
+  getUserLocation,
+  getWeatherJSON,
+  getCoordinatesJSON,
+  getTimeOfDay,
+  getSeason,
+  UNSPLASH_KEY,
+  iconWeatherMapping,
+} from './utils';
 import countriesMapping from './countriesMapping';
 
 export const UPDATE_FORECAST = 'UPDATE_FORECAST';
@@ -6,19 +15,31 @@ export const UPDATE_LOCATION = 'UPDATE_LOCATION';
 export const UPDATE_TEMP_SCALE = 'UPDATE_TEMP_SCALE';
 export const UPDATE_LANG = 'UPDATE_LANG';
 export const UPDATE_PRELOADER_STATUS = 'UPDATE_PRELOADER_STATUS';
-
-export function updatePreloader(booleanStatus) {
-  return {
-    type: UPDATE_PRELOADER_STATUS,
-    isLoading: booleanStatus,
-  };
-}
+export const BG_FETCH_FAIL = 'BG_FETCH_FAIL';
+export const BG_FETCH_SUCCESS = 'BG_FETCH_SUCCESS';
 
 function updateForecast(weather) {
   return {
     type: UPDATE_FORECAST,
     forecastsList: weather.daily.data.slice(0, 3),
     todayForecast: { ...weather.currently, timezone: weather.timezone },
+  };
+}
+
+export async function getPhotosJSON(weather, month, hour) {
+  const season = getSeason(month);
+  const timeOfDay = getTimeOfDay(hour);
+  const defaultWeather = 'clear';
+  return fetch(
+    `https://api.unsplash.com/photos/random?query=${season}+nature+${timeOfDay}+${iconWeatherMapping[weather] ||
+      defaultWeather}&client_id=${UNSPLASH_KEY}`,
+  );
+}
+
+export function updatePreloader(booleanStatus) {
+  return {
+    type: UPDATE_PRELOADER_STATUS,
+    isLoading: booleanStatus,
   };
 }
 
@@ -47,6 +68,12 @@ export function updateTempScale(tempScale) {
 
 export function updateLang(language) {
   return { type: UPDATE_LANG, language };
+}
+
+export function handleFetchFail() {
+  return {
+    type: BG_FETCH_FAIL,
+  };
 }
 
 export function getLocation(town, language) {
@@ -80,9 +107,20 @@ export function updateBackgroundPhoto(weather, time) {
     dispatch(updatePreloader(true));
     const monthIndex = new Date(time * 1000).getMonth();
     const currentHour = new Date(time * 1000).getHours();
-    const data = await getPhotosJSON(weather, monthIndex, currentHour);
-    const photoLink = data.urls.full;
-    setBackground(photoLink);
-    dispatch(updatePreloader(false));
+    try {
+      const resp = await getPhotosJSON(weather, monthIndex, currentHour);
+      const data = await resp.json();
+      const photoLink = data.urls.full;
+      setBackground(photoLink);
+    } catch (e) {
+      dispatch(handleFetchFail());
+    } finally {
+      dispatch(updatePreloader(false));
+      setTimeout(() => {
+        dispatch({
+          type: BG_FETCH_SUCCESS,
+        });
+      }, 4500);
+    }
   };
 }

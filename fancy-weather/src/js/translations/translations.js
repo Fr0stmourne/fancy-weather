@@ -26,6 +26,9 @@ export const en = {
     title: 'Overcast',
     feelsLike: 'Feels like',
   },
+  errors: {
+    bg: 'Oops! Something went wrong: an image was not loaded!',
+  },
 };
 
 export const ru = {
@@ -55,6 +58,9 @@ export const ru = {
   overcast: {
     title: 'Прогноз',
     feelsLike: 'По ощущению',
+  },
+  errors: {
+    bg: 'Ой! Что-то пошло не так, и изображение не загрузилось!',
   },
 };
 
