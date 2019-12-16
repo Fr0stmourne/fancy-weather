@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { localizeDate } from '../../utils';
 // import classNames from 'classnames';
-import { getDayOfAWeek, getMonthName } from '../../utils';
+// import { getDayOfAWeek, getMonthName } from '../../utils';
 
 function Time(props) {
-  const currentTimeDate = new Date(props.time * 1000);
-  const localizedTime = currentTimeDate.toLocaleString({}, { timeZone: props.timezone }).split(' ')[1];
+  const { date, time } = localizeDate(props.time, props.timezone, props.language);
 
   return (
     <React.Fragment>
-      <p className="weather__day">
-        {`${getDayOfAWeek(
-          currentTimeDate.getDay(),
-          props.appSettings.language,
-        )} ${currentTimeDate.getDate()} ${getMonthName(currentTimeDate.getMonth(), props.appSettings.language)}`}
-      </p>
-      <time className="weather__time">{localizedTime}</time>
+      <p className="weather__day">{date}</p>
+      <time className="weather__time">{time}</time>
     </React.Fragment>
   );
 }
@@ -24,6 +19,7 @@ Time.propTypes = {
   className: PropTypes.string,
   time: PropTypes.number,
   timezone: PropTypes.string,
+  language: PropTypes.string,
   appSettings: PropTypes.object,
 };
 

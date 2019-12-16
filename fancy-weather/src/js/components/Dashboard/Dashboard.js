@@ -21,6 +21,7 @@ function Dashboard(props) {
             tempScale={props.appSettings.tempScale}
             className={classnames(styles['weather__forecast-item'], props.className)}
             forecastData={el}
+            timezone={props.todayForecast.timezone}
             key={index}
             appSettings={props.appSettings}
           ></DayForecast>

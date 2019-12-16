@@ -39,7 +39,12 @@ class TodayForecast extends Component {
         <h2 className="weather__title">
           {this.props.location.city}, {this.props.location.country}
         </h2>
-        <Time appSettings={this.props.appSettings} time={this.state.time} />
+        <Time
+          appSettings={this.props.appSettings}
+          time={this.state.time}
+          timezone={this.props.todayForecast.timezone}
+          language={this.props.appSettings.language}
+        />
         <div className={styles.weather__forecast}>
           <div className={styles.weather__temperature}>
             {Math.round(displayTemperature(this.props.todayForecast.temperature, this.props.tempScale))}&deg;

@@ -1,5 +1,3 @@
-import translations from './translations/translations';
-
 const ACCESS_PHOTOS_KEY = '5cb2e43d6429d9be2ec68ef4f1bd86e3';
 // const UNSPLASH_KEY = `bbd7d091469d1bb74d894f08f1ef8a5d2cbd36a1ad3a02f712e4354c909d7d9a`;
 const ACCESS_WEATHER_KEY = '19d9bc6a1e14802827f4384c9bacfa45';
@@ -56,10 +54,6 @@ export const DEFAULT_LANG = 'en';
 
 export const DEFAULT_ICON = 'thermometer';
 
-export function getDayOfAWeek(dayIndex, language) {
-  return translations[language].days[dayIndex];
-}
-
 export function getTimeOfDay(hour) {
   if ((hour >= 0 && hour <= 5) || hour >= 22) return 'night';
   if (hour > 5 && hour <= 11) return 'morning';
@@ -67,8 +61,40 @@ export function getTimeOfDay(hour) {
   return 'evening';
 }
 
-export function getMonthName(monthIndex, language) {
-  return translations[language].months[monthIndex];
+function capitalizeEach(string) {
+  return string
+    .split(' ')
+    .map(el => `${el[0].toUpperCase()}${el.slice(1)}`)
+    .join(' ');
+}
+
+export function localizeDate(timestamp, timezone, language) {
+  const langMap = {
+    en: 'en-US',
+    ru: 'ru-RU',
+  };
+
+  const currentTimeDate = new Date(timestamp * 1000);
+  const localizedTime = currentTimeDate.toLocaleString({}, { timeZone: timezone, timeStyle: 'medium' });
+  const localizedDate = capitalizeEach(
+    currentTimeDate.toLocaleString(langMap[language], {
+      timeZone: timezone,
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    }),
+  );
+  const dayOfWeek = capitalizeEach(
+    currentTimeDate.toLocaleString(langMap[language], {
+      timeZone: timezone,
+      weekday: 'long',
+    }),
+  );
+  return {
+    time: localizedTime,
+    date: localizedDate,
+    day: dayOfWeek,
+  };
 }
 
 async function queryTemplate(link) {
@@ -106,14 +132,8 @@ export async function getPhotosJSON(weather, month, hour, { lat, lng }) {
   const season = getSeason(month);
   const timeOfDay = getTimeOfDay(hour);
   const defaultWeather = 'clear';
-  console.log(
-    `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[
-      weather
-    ] || defaultWeather},${season},${timeOfDay}`,
-  );
-
   return queryTemplate(
-    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=${iconWeatherMapping[
+    `${proxyURL}https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${ACCESS_PHOTOS_KEY}&tag_mode=any&nojsoncallback=1&format=json&lat=${lat}&lon=${lng}&accuracy=3&extras=url_h&tags=nature,${iconWeatherMapping[
       weather
     ] || defaultWeather},${season},${timeOfDay}`,
   );
