@@ -82,16 +82,14 @@ export function getInitialLocation() {
   };
 }
 
-export function updateBackgroundPhoto(weather, time, location) {
+export function updateBackgroundPhoto(weather, time) {
   return async dispatch => {
     dispatch(updatePreloader(true));
     const monthIndex = new Date(time * 1000).getMonth();
     const currentHour = new Date(time * 1000).getHours();
-    const data = await getPhotosJSON(weather, monthIndex, currentHour, { lat: location.lat, lng: location.lng });
-    const chosenPhoto = data.photos.photo.filter(obj => Object.keys(obj).includes('url_h'))[
-      Math.round(Math.random() * data.photos.photo.length)
-    ];
-    setBackground(chosenPhoto.url_h);
+    const data = await getPhotosJSON(weather, monthIndex, currentHour);
+    const photoLink = data.urls.full;
+    setBackground(photoLink);
     dispatch(updateBackground());
     dispatch(updatePreloader(false));
   };
