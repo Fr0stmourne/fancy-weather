@@ -23,9 +23,17 @@ class Search extends Component {
 
   render() {
     const translationJSON = translations[this.props.appSettings.language];
+    const searchCb = () => {
+      this.props.searchBtnHandler(this.searchInputRef.current.value || undefined);
+    };
+    const ENTER_KEY = 'Enter';
     return (
       <section className={styles.search}>
         <input
+          onKeyDown={e => {
+            if (e.key === ENTER_KEY) searchCb();
+          }}
+          autoFocus
           placeholder={translationJSON.search.placeholder}
           ref={this.searchInputRef}
           className={styles.search__input}
@@ -33,12 +41,7 @@ class Search extends Component {
           name="location"
           id="search"
         />
-        <button
-          className={styles.search__btn}
-          onClick={() => {
-            this.props.searchBtnHandler(this.searchInputRef.current.value || undefined);
-          }}
-        >
+        <button className={styles.search__btn} onClick={searchCb}>
           {translationJSON.search.button}
         </button>
         <button

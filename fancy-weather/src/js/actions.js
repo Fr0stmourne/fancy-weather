@@ -5,7 +5,6 @@ export const UPDATE_FORECAST = 'UPDATE_FORECAST';
 export const UPDATE_LOCATION = 'UPDATE_LOCATION';
 export const UPDATE_TEMP_SCALE = 'UPDATE_TEMP_SCALE';
 export const UPDATE_LANG = 'UPDATE_LANG';
-export const UPDATE_BG = 'UPDATE_BG';
 export const UPDATE_PRELOADER_STATUS = 'UPDATE_PRELOADER_STATUS';
 
 export function updatePreloader(booleanStatus) {
@@ -50,12 +49,6 @@ export function updateLang(language) {
   return { type: UPDATE_LANG, language };
 }
 
-export function updateBackground() {
-  return {
-    type: UPDATE_BG,
-  };
-}
-
 export function getLocation(town, language) {
   return async dispatch => {
     dispatch(updatePreloader(true));
@@ -90,7 +83,6 @@ export function updateBackgroundPhoto(weather, time) {
     const data = await getPhotosJSON(weather, monthIndex, currentHour);
     const photoLink = data.urls.full;
     setBackground(photoLink);
-    dispatch(updateBackground());
     dispatch(updatePreloader(false));
   };
 }
