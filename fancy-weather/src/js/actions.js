@@ -146,7 +146,9 @@ export function updateBackgroundPhoto(weather, time) {
       const resp = await getPhotosJSON(weather, monthIndex, currentHour);
       const data = await resp.json();
       const photoLink = data.urls.full;
-      setBackground(photoLink);
+      const photoResp = await fetch(photoLink);
+      const photo = await photoResp.blob();
+      setBackground(photo);
     } catch (e) {
       dispatch(handleBgFetchFail());
     } finally {

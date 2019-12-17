@@ -50,13 +50,15 @@ export const DEFAULT_LANG = 'en';
 export const DEFAULT_ICON = 'thermometer';
 
 export function getTimeOfDay(hour) {
+  if (typeof hour !== 'number') throw new Error('Incorrect data type');
   if ((hour >= 0 && hour <= 5) || hour >= 22) return 'night';
   if (hour > 5 && hour <= 11) return 'morning';
-  if (hour > 11 && hour <= 15) return 'afternoon';
+  if (hour > 11 && hour <= 15) return 'day';
   return 'evening';
 }
 
-function capitalizeEach(string) {
+export function capitalizeEach(string) {
+  if (typeof string !== 'string') throw new Error('Incorrect data type');
   return string
     .split(' ')
     .map(el => `${el[0].toUpperCase()}${el.slice(1)}`)
@@ -92,9 +94,9 @@ export function localizeDate(timestamp, timezone, language) {
   };
 }
 
-export function setBackground(link) {
+export function setBackground(blob) {
   document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
-  rgba(0,0,0,0.5)), url(${link})`;
+  rgba(0,0,0,0.5)), url(${URL.createObjectURL(blob)})`;
 }
 
 export function getCoordsObjFromString(locationString) {

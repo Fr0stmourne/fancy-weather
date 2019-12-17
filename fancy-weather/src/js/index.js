@@ -11,7 +11,6 @@ import LocalStorageProvider from './localStorageProvider';
 const store = createStore(rootReducer, applyMiddleware(thunk));
 store.subscribe(() => {
   LocalStorageProvider.setSettings(store.getState().appSettings);
-  console.log(store.getState());
 });
 
 const app = (
