@@ -43,7 +43,7 @@ class App extends Component {
   async componentDidMount() {
     await this.props.onInitialLocationUpdate();
     await this.onSearch(this.props.location.city);
-    this.onBgReload();
+    this.onBgReload(); //
   }
 
   render() {
