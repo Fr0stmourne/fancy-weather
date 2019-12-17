@@ -6,6 +6,8 @@ import {
   UPDATE_PRELOADER_STATUS,
   BG_FETCH_FAIL,
   BG_FETCH_SUCCESS,
+  CITY_FETCH_FAIL,
+  CITY_FETCH_SUCCESS,
 } from './actions';
 import LocalStorageProvider from './localStorageProvider';
 import { DEFAULT_ICON, DEFAULT_SCALE, DEFAULT_LANG } from './utils';
@@ -30,10 +32,11 @@ const initialState = {
     tempScale: LocalStorageProvider.getSettings() ? LocalStorageProvider.getSettings().tempScale : DEFAULT_SCALE,
   },
   isLoading: true,
-  isError: false,
+  bgHasError: false,
+  cityHasError: false,
 };
 
-function updateReducer(state = initialState, action) {
+function rootReducer(state = initialState, action) {
   switch (action.type) {
     case UPDATE_FORECAST:
       return { ...state, forecasts: action.forecastsList, todayForecast: action.todayForecast };
@@ -46,12 +49,16 @@ function updateReducer(state = initialState, action) {
     case UPDATE_PRELOADER_STATUS:
       return { ...state, isLoading: action.isLoading };
     case BG_FETCH_FAIL:
-      return { ...state, isError: true };
+      return { ...state, bgHasError: true };
     case BG_FETCH_SUCCESS:
-      return { ...state, isError: false };
+      return { ...state, bgHasError: false };
+    case CITY_FETCH_FAIL:
+      return { ...state, cityHasError: true };
+    case CITY_FETCH_SUCCESS:
+      return { ...state, cityHasError: false };
     default:
       return state;
   }
 }
 
-export default updateReducer;
+export default rootReducer;

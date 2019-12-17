@@ -1,9 +1,4 @@
 // const ACCESS_PHOTOS_KEY = '5cb2e43d6429d9be2ec68ef4f1bd86e3';
-export const UNSPLASH_KEY = `bbd7d091469d1bb74d894f08f1ef8a5d2cbd36a1ad3a02f712e4354c909d7d9a`;
-const ACCESS_WEATHER_KEY = '19d9bc6a1e14802827f4384c9bacfa45';
-const ACCESS_GEOCODING_KEY = '89f190daada24d6b9f13b38376d75c02';
-const ACCESS_IP_KEY = '94fe768a1c789c';
-const proxyURL = 'https://cors-anywhere.herokuapp.com/';
 
 export const iconWeatherMapping = {
   'clear-day': 'clear',
@@ -97,16 +92,6 @@ export function localizeDate(timestamp, timezone, language) {
   };
 }
 
-async function queryTemplate(link) {
-  let apiData;
-  try {
-    apiData = await fetch(link);
-  } catch (e) {
-    throw new Error(e);
-  }
-  return apiData.json();
-}
-
 export function setBackground(link) {
   document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
   rgba(0,0,0,0.5)), url(${link})`;
@@ -126,20 +111,4 @@ function convertToFahr(celsTemp) {
 
 export function displayTemperature(celsTemp, tempScale) {
   return tempScale === DEFAULT_SCALE ? celsTemp : convertToFahr(celsTemp);
-}
-
-export async function getWeatherJSON(coords, lang = 'en') {
-  return queryTemplate(
-    `${proxyURL}https://api.darksky.net/forecast/${ACCESS_WEATHER_KEY}/${coords}?lang=${lang}&units=si`,
-  );
-}
-
-export async function getCoordinatesJSON(city = 'saint-petersburg', lang = 'en') {
-  return queryTemplate(
-    `${proxyURL}https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${ACCESS_GEOCODING_KEY}&pretty=1&no_annotations=1&language=${lang}`,
-  );
-}
-
-export async function getUserLocation() {
-  return queryTemplate(`${proxyURL}https://ipinfo.io/json?token=${ACCESS_IP_KEY}`);
 }

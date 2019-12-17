@@ -28,6 +28,7 @@ export const en = {
   },
   errors: {
     bg: 'Oops! Something went wrong: an image was not loaded!',
+    city: 'Some error occurred during data loading!',
   },
 };
 
@@ -61,6 +62,7 @@ export const ru = {
   },
   errors: {
     bg: 'Ой! Что-то пошло не так, и изображение не загрузилось!',
+    city: 'Произошла ошибка при загрузке данных!',
   },
 };
 

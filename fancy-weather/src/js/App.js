@@ -74,7 +74,16 @@ class App extends Component {
               futureForecasts={this.props.forecasts}
             ></Dashboard>
             <WeatherMap location={this.props.location} appSettings={this.props.appSettings}></WeatherMap>
-            <ErrorPopup isHidden={!this.props.isError} appSettings={this.props.appSettings}></ErrorPopup>
+            <ErrorPopup
+              isHidden={!this.props.bgHasError}
+              popupFor={'bg'}
+              appSettings={this.props.appSettings}
+            ></ErrorPopup>
+            <ErrorPopup
+              isHidden={!this.props.cityHasError}
+              popupFor={'city'}
+              appSettings={this.props.appSettings}
+            ></ErrorPopup>
           </section>
         </YMaps>
       </React.Fragment>
@@ -89,7 +98,8 @@ function MapStateToProps(state) {
     location: state.location,
     appSettings: state.appSettings,
     isLoading: state.isLoading,
-    isError: state.isError,
+    bgHasError: state.bgHasError,
+    cityHasError: state.cityHasError,
   };
 }
 
@@ -121,7 +131,8 @@ App.propTypes = {
   location: PropTypes.object,
   appSettings: PropTypes.object,
   isLoading: PropTypes.bool,
-  isError: PropTypes.bool,
+  bgHasError: PropTypes.bool,
+  cityHasError: PropTypes.bool,
 };
 
 export default connect(MapStateToProps, MapDispatchToProps)(App);

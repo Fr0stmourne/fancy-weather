@@ -19,7 +19,11 @@ class ErrorPopup extends Component {
   render() {
     return (
       <div
-        className={classnames(styles['error-popup'], this.state.isHidden ? '' : styles['error-popup--bubble'])}
+        className={classnames(
+          styles['error-popup'],
+          this.state.isHidden ? '' : styles['error-popup--bubble'],
+          styles[`error-popup--${this.props.popupFor}`],
+        )}
         onAnimationEnd={() => {
           this.setState({
             isHidden: true,
@@ -27,7 +31,7 @@ class ErrorPopup extends Component {
         }}
         id="error-popup"
       >
-        {translations[this.props.appSettings.language].errors.bg}
+        {translations[this.props.appSettings.language].errors[this.props.popupFor]}
       </div>
     );
   }
@@ -35,6 +39,7 @@ class ErrorPopup extends Component {
 
 ErrorPopup.propTypes = {
   isHidden: PropTypes.bool,
+  popupFor: PropTypes.string,
   className: PropTypes.string,
   appSettings: PropTypes.object,
 };
