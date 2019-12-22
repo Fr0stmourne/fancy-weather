@@ -4,6 +4,6 @@ Here is a copy of private RSSchool repo with couple of my projects.
 
 My first React-Redux app (weather forecast)
 
-**1. Codejam Image API**
+**2. Codejam Image API**
 
 Graphics editor based on a canvas (Canvas/API fetching practice)
