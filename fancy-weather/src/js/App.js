@@ -36,14 +36,15 @@ class App extends Component {
   };
 
   onLangChange = async lang => {
-    await this.props.onLangChange(lang, this.props.location);
+    await this.props.onLangChange(lang); //
     await this.onSearch(this.props.location.city);
   };
 
   async componentDidMount() {
     await this.props.onInitialLocationUpdate();
     await this.onSearch(this.props.location.city);
-    this.onBgReload(); //
+    // this.onBgReload(); doesn't work without timeout cuz store isn't updated immediately after action dispatching (why?)
+    setTimeout(() => this.onBgReload(), 300);
   }
 
   render() {

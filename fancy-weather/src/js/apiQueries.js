@@ -9,8 +9,6 @@ const proxyURL = 'https://cors-anywhere.herokuapp.com/';
 export async function getPhotosJSON(weather, month, hour) {
   const season = getSeason(month);
   const timeOfDay = getTimeOfDay(hour);
-  console.log(weather);
-
   const defaultWeather = 'clear';
   return fetch(
     `https://api.unsplash.com/photos/random?query=${season}+nature+${timeOfDay}+${iconWeatherMapping[weather] ||
