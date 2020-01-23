@@ -1,0 +1,50 @@
+{
+  "name": "palette",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "natives": "^1.1.6",
+    "node-sass": "^4.12.0"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ],
+  "devDependencies": {
+    "autoprefixer": "^9.6.1",
+    "browser-sync": "^2.26.7",
+    "css-mqpacker": "^7.0.0",
+    "del": "^5.0.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "gulp": "^4.0.2",
+    "gulp-better-rollup": "^4.0.1",
+    "gulp-csso": "^3.0.1",
+    "gulp-imagemin": "^6.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-svgmin": "^2.2.0",
+    "gulp-svgstore": "^7.0.1",
+    "gulp-tinypng": "^1.0.2",
+    "gulp-tinypng-compress": "^1.2.5",
+    "jest": "^24.9.0",
+    "rollup": "^1.19.3"
+  },
+  "scripts": {
+    "lint": "eslint ./gulpfile.js src/js/**/*.js",
+    "build": "gulp build",
+    "start": "gulp serve",
+    "test": "jest build/js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

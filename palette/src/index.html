@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CodeJam Canvas</title>
+  <link rel="stylesheet" href="./css/style.min.css">
+</head>
+
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="main-header__wrapper">
+        <button class="btn main-header__menu-btn"><span class="visually-hidden">Menu</span></button>
+        <h1 class="main-header__title">CodeJam Palette</h1>
+      </div>
+      <button class="btn main-header__extra-btn"><span class="visually-hidden">Extra
+          menu</span></button>
+    </div>
+  </header>
+  <main>
+    <div class="container content">
+      <div class="content__control-area control-area">
+        <section class="controls">
+          <h2 class="controls__title visually-hidden">Controls</h2>
+          <ul class="controls__controls">
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--paint"
+                data-key="KeyB">Paint
+                bucket (B)</button></li>
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--choose"
+                data-key="KeyC">Choose
+                color (C)</button></li>
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--pencil"
+                data-key="KeyP">Pencil
+                (P)</button></li>
+            <li class="controls__control"><button
+                class="controls__control-btn controls__control-btn--move">Move</button></li>
+            <li class="controls__control"><button
+                class="controls__control-btn controls__control-btn--transform">Transform</button></li>
+          </ul>
+        </section>
+        <section class="colors">
+          <h2 class="colors__title visually-hidden">Colors</h2>
+          <ul class="colors__controls">
+            <li class="colors__control"><label class="colors__label colors__label--current"><input type="color"
+                  class="colors__control-btn visually-hidden"></label><span class="colors__control-desc">Current
+                color</span></li>
+            <li class="colors__control colors__color colors__color--previous"><button class="colors__color-btn"><span
+                  class="visually-hidden">Previous color</span></button>Previous color</li>
+          </ul>
+          <ul class="colors__preset">
+            <li class="colors__color colors__color--red"><button class="colors__color-btn"><span
+                  class="visually-hidden">Red</span></button>Red</li>
+            <li class="colors__color colors__color--blue"><button class="colors__color-btn"><span
+                  class="visually-hidden">Blue</span></button>Blue</li>
+          </ul>
+        </section>
+        <section class="picture-controls">
+          <ul class="picture-controls__list">
+            <li class="picture-controls__option"><label class="picture-controls__label"><input class="visually-hidden"
+                  type="radio" name="picture-option" id="4x4">4x4</label>
+            </li>
+            <li class="picture-controls__option"><label class="picture-controls__label"><input class="visually-hidden"
+                  type="radio" name="picture-option" id="32x32">32x32</label>
+            </li>
+            <li class="picture-controls__option"><button class="picture-controls__clear-btn" id="clear">Clear</button>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <div class="content__working-area working-area">
+        <canvas class="working-area__canvas" id="canvas"></canvas>
+      </div>
+    </div>
+  </main>
+  <script src="./js/index.js"></script>
+</body>
+
+</html>
