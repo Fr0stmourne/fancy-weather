@@ -15,35 +15,25 @@ import {
   getInitialLocation,
   updateWeather,
   getLocationInfo,
-  updateLocation,
 } from './actions';
 import { langMapping } from './utils';
 import ErrorPopup from './components/ErrorPopup/ErrorPopup';
 
 class App extends Component {
-  onSearch = town => {
-    // await this.props.onLocationUpdate(town);
-    // const { coordinates } = this.props.location;
-    // const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
-    // await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
-
-    this.props.updateLocation(town);
-    this.props.onLocationUpdate();
-    this.props.onWeatherUpdate();
+  searchCity = async town => {
+    await this.props.getLocationInfo(town);
+    await this.props.updateWeather();
+    await this.props.updateBackgroundPhoto();
   };
 
-  searchCity = () => {};
-
-  onLangChange = async lang => {
-    await this.props.onLangChange(lang); //
-    await this.onSearch(this.props.location.city);
+  changeLanguage = lang => {
+    this.props.onLangChange(lang);
+    this.searchCity();
   };
 
   async componentDidMount() {
-    await this.props.onInitialLocationUpdate();
-    await this.props.onLocationUpdate();
-    await this.props.onWeatherUpdate();
-    this.props.onBgReload();
+    await this.props.getInitialLocation();
+    this.searchCity();
   }
 
   render() {
@@ -63,10 +53,10 @@ class App extends Component {
             <Controls
               appSettings={this.props.appSettings}
               tempScaleChangeHandler={this.props.onTempScaleChange}
-              reloadBtnHandler={this.props.onBgReload}
-              langChangeHandler={this.onLangChange}
+              reloadBtnHandler={this.props.updateBackgroundPhoto}
+              langChangeHandler={this.changeLanguage}
             ></Controls>
-            <Search searchBtnHandler={this.onSearch} appSettings={this.props.appSettings}></Search>
+            <Search searchBtnHandler={this.searchCity} appSettings={this.props.appSettings}></Search>
             <Dashboard
               appSettings={this.props.appSettings}
               location={this.props.location}
@@ -97,28 +87,24 @@ function MapStateToProps(state) {
 
 function MapDispatchToProps(dispatch) {
   return {
-    onWeatherUpdate() {
-      dispatch(updateWeather());
-    },
-    onLocationUpdate: () => dispatch(getLocationInfo()),
-    updateLocation: town => dispatch(updateLocation(town)),
-    onInitialLocationUpdate: () => dispatch(getInitialLocation()),
+    updateWeather: () => dispatch(updateWeather()),
+    getLocationInfo: town => dispatch(getLocationInfo(town)),
+    getInitialLocation: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
-    onBgReload: () => dispatch(updateBackgroundPhoto()),
+    updateBackgroundPhoto: () => dispatch(updateBackgroundPhoto()),
   };
 }
 
 App.propTypes = {
   forecasts: PropTypes.array,
-  onWeatherUpdate: PropTypes.func,
-  onLocationUpdate: PropTypes.func,
-  updateLocation: PropTypes.func,
+  updateWeather: PropTypes.func,
+  getLocationInfo: PropTypes.func,
   onTimeTick: PropTypes.func,
-  onInitialLocationUpdate: PropTypes.func,
+  getInitialLocation: PropTypes.func,
   onTempScaleChange: PropTypes.func,
   onLangChange: PropTypes.func,
-  onBgReload: PropTypes.func,
+  updateBackgroundPhoto: PropTypes.func,
   todayForecast: PropTypes.object,
   location: PropTypes.object,
   appSettings: PropTypes.object,

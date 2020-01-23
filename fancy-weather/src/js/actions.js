@@ -104,16 +104,14 @@ export function updateWeather() {
   };
 }
 
-export function getLocationInfo() {
+export function getLocationInfo(city) {
   return async (dispatch, getState) => {
     dispatch(updatePreloader(true));
     try {
       const { language } = getState().appSettings;
-      const { city } = getState().location;
-      const resp = await getCoordinatesJSON(city, language);
+      console.log('city getLocationInfo', city || getState().location.city, language);
+      const resp = await getCoordinatesJSON(city || getState().location.city, language);
       const geocodingData = await resp.json();
-      console.log(geocodingData);
-
       const cityField = geocodingData.results[0].components;
       const newLocation = {
         city: cityField.city || cityField.town || cityField.county || cityField.state || cityField.village,
@@ -122,33 +120,27 @@ export function getLocationInfo() {
       };
       dispatch(updateLocation(newLocation));
     } catch (e) {
-      console.log(e);
-
       dispatch(handleDataFetchFail());
     } finally {
-      dispatch(updatePreloader(false));
       dispatch(handleDataFetchSuccess());
     }
   };
 }
 
 export function getInitialLocation() {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     try {
       const resp = await getUserLocation();
       const userLocation = await resp.json();
       const [lat, lng] = userLocation.loc.split(',').map(el => +el);
       userLocation.coordinates = { lat, lng };
       userLocation.country = countriesMapping[userLocation.country];
-      console.log('user location', userLocation);
-
       dispatch(updateLocation(userLocation));
     } catch (e) {
       dispatch(handleDataFetchFail());
     } finally {
-      dispatch(updatePreloader(false));
       dispatch(handleDataFetchSuccess());
-      console.log('state', getState().location);
+      dispatch(updatePreloader(false));
     }
   };
 }
