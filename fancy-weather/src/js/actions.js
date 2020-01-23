@@ -15,8 +15,10 @@ export const CITY_FETCH_SUCCESS = 'CITY_FETCH_SUCCESS';
 function updateForecast(weather) {
   return {
     type: UPDATE_FORECAST,
-    forecastsList: weather.daily.data.slice(0, 3),
-    todayForecast: { ...weather.currently, timezone: weather.timezone },
+    payload: {
+      forecastsList: weather.daily.data.slice(0, 3),
+      todayForecast: { ...weather.currently, timezone: weather.timezone },
+    },
   };
 }
 
@@ -59,36 +61,43 @@ export function handleDataFetchSuccess() {
 export function updatePreloader(booleanStatus) {
   return {
     type: UPDATE_PRELOADER_STATUS,
-    isLoading: booleanStatus,
+    payload: {
+      isLoading: booleanStatus,
+    },
   };
 }
 
 export function updateLocation(location) {
-  console.log('updating with', location);
-
   return {
     type: UPDATE_LOCATION,
-    location,
+    payload: {
+      location,
+    },
   };
 }
 
 export function updateTempScale(tempScale) {
   return {
     type: UPDATE_TEMP_SCALE,
-    tempScale,
+    payload: {
+      tempScale,
+    },
   };
 }
 
 export function updateLang(language) {
-  return { type: UPDATE_LANG, language };
+  return {
+    type: UPDATE_LANG,
+    payload: {
+      language,
+    },
+  };
 }
 
 export function updateWeather() {
   return async (dispatch, getState) => {
     dispatch(updatePreloader(true));
     try {
-      console.log(getState());
-
       const { coordinates } = getState().location;
       const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
       const { language } = getState().appSettings;
@@ -109,7 +118,6 @@ export function getLocationInfo(city) {
     dispatch(updatePreloader(true));
     try {
       const { language } = getState().appSettings;
-      console.log('city getLocationInfo', city || getState().location.city, language);
       const resp = await getCoordinatesJSON(city || getState().location.city, language);
       const geocodingData = await resp.json();
       const cityField = geocodingData.results[0].components;

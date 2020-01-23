@@ -39,15 +39,15 @@ const initialState = {
 function rootReducer(state = initialState, action) {
   switch (action.type) {
     case UPDATE_FORECAST:
-      return { ...state, forecasts: action.forecastsList, todayForecast: action.todayForecast };
+      return { ...state, forecasts: action.payload.forecastsList, todayForecast: action.payload.todayForecast };
     case UPDATE_LOCATION:
-      return { ...state, location: action.location };
+      return { ...state, location: action.payload.location };
     case UPDATE_TEMP_SCALE:
-      return { ...state, appSettings: { ...state.appSettings, tempScale: action.tempScale } };
+      return { ...state, appSettings: { ...state.appSettings, tempScale: action.payload.tempScale } };
     case UPDATE_LANG:
-      return { ...state, appSettings: { ...state.appSettings, language: action.language } };
+      return { ...state, appSettings: { ...state.appSettings, language: action.payload.language } };
     case UPDATE_PRELOADER_STATUS:
-      return { ...state, isLoading: action.isLoading };
+      return { ...state, isLoading: action.payload.isLoading };
     case BG_FETCH_FAIL:
       return { ...state, bgHasError: true };
     case BG_FETCH_SUCCESS:
