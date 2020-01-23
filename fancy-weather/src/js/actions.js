@@ -138,18 +138,17 @@ export function getInitialLocation() {
   };
 }
 
-export function updateBackgroundPhoto(weather, time) {
-  return async dispatch => {
+export function updateBackgroundPhoto() {
+  return async (dispatch, getState) => {
     dispatch(updatePreloader(true));
+    const { icon: weather, time } = getState().todayForecast;
     const monthIndex = new Date(time * 1000).getMonth();
     const currentHour = new Date(time * 1000).getHours();
     try {
       const resp = await getPhotosJSON(weather, monthIndex, currentHour);
       const data = await resp.json();
       const photoLink = data.urls.full;
-      const photoResp = await fetch(photoLink);
-      const photo = await photoResp.blob();
-      setBackground(photo);
+      await setBackground(photoLink);
     } catch (e) {
       dispatch(handleBgFetchFail());
     } finally {

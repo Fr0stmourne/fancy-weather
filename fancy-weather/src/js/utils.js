@@ -94,9 +94,14 @@ export function localizeDate(timestamp, timezone, language) {
   };
 }
 
-export function setBackground(blob) {
-  document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
-  rgba(0,0,0,0.5)), url(${URL.createObjectURL(blob)})`;
+export function setBackground(url) {
+  return new Promise(resolve => {
+    document.body.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.5),
+    rgba(0,0,0,0.5)), url(${url})`;
+    const img = new Image();
+    img.src = url;
+    img.onload = () => resolve();
+  });
 }
 
 export function getCoordsObjFromString(locationString) {

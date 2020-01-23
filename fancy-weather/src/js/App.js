@@ -27,14 +27,6 @@ class App extends Component {
     await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
   };
 
-  onBgReload = () => {
-    this.props.onBgReload(
-      this.props.todayForecast.icon,
-      this.props.todayForecast.time,
-      this.props.location.coordinates,
-    );
-  };
-
   onLangChange = async lang => {
     await this.props.onLangChange(lang); //
     await this.onSearch(this.props.location.city);
@@ -43,8 +35,8 @@ class App extends Component {
   async componentDidMount() {
     await this.props.onInitialLocationUpdate();
     await this.onSearch(this.props.location.city);
-    // this.onBgReload(); doesn't work without timeout cuz store isn't updated immediately after action dispatching (why?)
-    setTimeout(() => this.onBgReload(), 300);
+    this.props.onBgReload();
+    // setTimeout(() => this.onBgReload(), 300);
   }
 
   render() {
@@ -64,7 +56,7 @@ class App extends Component {
             <Controls
               appSettings={this.props.appSettings}
               tempScaleChangeHandler={this.props.onTempScaleChange}
-              reloadBtnHandler={this.onBgReload}
+              reloadBtnHandler={this.props.onBgReload}
               langChangeHandler={this.onLangChange}
             ></Controls>
             <Search searchBtnHandler={this.onSearch} appSettings={this.props.appSettings}></Search>
@@ -113,9 +105,7 @@ function MapDispatchToProps(dispatch) {
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
-    onBgReload(weather, time, location) {
-      dispatch(updateBackgroundPhoto(weather, time, location));
-    },
+    onBgReload: () => dispatch(updateBackgroundPhoto()),
   };
 }
 
