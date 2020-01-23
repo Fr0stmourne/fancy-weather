@@ -1,0 +1,42 @@
+@keyframes bubble {
+  0% {
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.error-popup {
+  position: fixed;
+  padding: 20px;
+
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(#000, 0.7);
+  border: 2px solid #fff;
+  color: #fff;
+  border-radius: 10px;
+  opacity: 0;
+
+  &--bg {
+    top: 30%;
+  }
+
+  &--city {
+    top: 60%;
+  }
+
+  &--bubble {
+    animation: bubble 4.5s ease;
+  }
+}

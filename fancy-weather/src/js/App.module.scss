@@ -1,0 +1,39 @@
+@import '../scss/utils/variables.scss';
+
+.main-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content max-content;
+  grid-row-gap: 50px;
+  grid-column-gap: 50px;
+  box-sizing: border-box;
+  padding: 30px 50px 0;
+  margin: 0 auto;
+  max-width: 1400px;
+  height: 100vh;
+
+
+  @media (max-width: $desktop-width) {
+    grid-row-gap: 30px;
+  }
+
+  @media (max-width: $tablet-width) {
+    height: auto;
+    grid-column-gap: 20px;
+  }
+
+  @media (max-width: 500px) {
+    padding: 20px 20px 0;
+  }
+}
+
+.preloader-container {
+  position: fixed;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
