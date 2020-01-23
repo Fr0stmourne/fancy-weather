@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CodeJam Canvas</title>
+</head>
+
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="main-header__wrapper">
+        <button class="btn main-header__menu-btn"><span class="visually-hidden">Menu</span></button>
+        <h1 class="main-header__title">CodeJam Palette</h1>
+      </div>
+      <div class="main-header__wrapper">
+        <p class="main-header__output" id="auth-output"></p>
+        <button class="main-header__auth" id="auth">Log in via GitHub</button>
+        <button class="btn main-header__extra-btn"><span class="visually-hidden">Extra
+            menu</span></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="container content">
+      <div class="content__control-area control-area">
+        <section class="controls">
+          <h2 class="controls__title visually-hidden">Controls</h2>
+          <ul class="controls__controls">
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--paint"
+                data-key="KeyB">Paint
+                bucket (B)</button></li>
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--choose"
+                data-key="KeyC">Choose
+                color (C)</button></li>
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--pencil"
+                data-key="KeyP">Pencil
+                (P)</button></li>
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--move"
+                disabled>Move</button></li>
+            <li class="controls__control"><button class="controls__control-btn controls__control-btn--transform"
+                disabled>Transform</button></li>
+          </ul>
+        </section>
+        <section class="colors">
+          <h2 class="colors__title visually-hidden">Colors</h2>
+          <ul class="colors__controls">
+            <li class="colors__control"><label class="colors__label colors__label--current"><input type="color"
+                  class="colors__control-btn visually-hidden"></label><span class="colors__control-desc">Current
+                color</span></li>
+            <li class="colors__control colors__color colors__color--previous"><button class="colors__color-btn"><span
+                  class="visually-hidden">Previous color</span></button>Previous color</li>
+          </ul>
+          <ul class="colors__preset">
+            <li class="colors__color colors__color--red"><button class="colors__color-btn"><span
+                  class="visually-hidden">Red</span></button>Red</li>
+            <li class="colors__color colors__color--blue"><button class="colors__color-btn"><span
+                  class="visually-hidden">Blue</span></button>Blue</li>
+          </ul>
+        </section>
+        <section class="picture-controls">
+          <ul class="picture-controls__list">
+            <li class="picture-controls__option"><button class="picture-controls__btn picture-controls__btn--clear"
+                id="clear">Clear</button>
+            </li>
+            <li class="picture-controls__option"><button class="picture-controls__btn picture-controls__btn--grayscale"
+                id="grayscale-btn">B &
+                W</button>
+            </li>
+            <li class="picture-controls__option picture-controls__option--search"><input type="search"
+                class="picture-controls__town-input" placeholder="Choose town" id="town-input"><button
+                class="picture-controls__btn picture-controls__btn--search" id="town-search"><span
+                  class="visually-hidden">Search</span></button>
+            </li>
+            <li class="picture-controls__option"><select name="canvas-size" id="size-select"
+                class="picture-controls__size-select">
+                <option value="4" class="picture-controls__size">128*128</option>
+                <option value="2" class="picture-controls__size">256*256</option>
+                <option value="1" class="picture-controls__size">512*512</option>
+              </select>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <div class="content__working-area working-area">
+        <canvas class="working-area__canvas" id="canvas"></canvas>
+      </div>
+      <div class="error-popup" id="error-popup">Error: an image is not loaded!</div>
+    </div>
+  </main>
+</body>
+
+</html>
