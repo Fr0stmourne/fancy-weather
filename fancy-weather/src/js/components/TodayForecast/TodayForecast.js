@@ -71,7 +71,10 @@ TodayForecast.propTypes = {
   todayForecast: PropTypes.object,
   onTimeTick: PropTypes.func,
   tempScale: PropTypes.string,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
 };
 
 export default TodayForecast;

@@ -9,10 +9,8 @@ const proxyURL = 'https://cors-anywhere.herokuapp.com/';
 export function getPhotosJSON(weather, month, hour) {
   const season = getSeason(month);
   const timeOfDay = getTimeOfDay(hour);
-  const defaultWeather = 'clear';
   return fetch(
-    `https://api.unsplash.com/photos/random?query=${season}+nature+${timeOfDay}+${iconWeatherMapping[weather] ||
-      defaultWeather}&client_id=${UNSPLASH_KEY}`,
+    `https://api.unsplash.com/photos/random?query=${season}+nature+${timeOfDay}+${iconWeatherMapping[weather]}&client_id=${UNSPLASH_KEY}`,
   );
 }
 

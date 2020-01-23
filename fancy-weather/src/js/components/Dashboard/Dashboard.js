@@ -32,12 +32,15 @@ function Dashboard(props) {
 }
 
 Dashboard.propTypes = {
-  futureForecasts: PropTypes.array,
+  futureForecasts: PropTypes.arrayOf(PropTypes.object),
   todayForecast: PropTypes.object,
   onTimeTick: PropTypes.func,
   className: PropTypes.string,
   location: PropTypes.object,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
 };
 
 export default Dashboard;

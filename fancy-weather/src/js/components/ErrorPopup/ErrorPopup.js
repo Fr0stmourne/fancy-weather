@@ -23,7 +23,10 @@ ErrorPopup.propTypes = {
   isHidden: PropTypes.bool,
   popupFor: PropTypes.string,
   className: PropTypes.string,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
 };
 
 export default ErrorPopup;

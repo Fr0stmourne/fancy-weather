@@ -59,7 +59,10 @@ class Search extends Component {
 Search.propTypes = {
   searchBtnHandler: PropTypes.func,
   finalTranscript: PropTypes.string,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
   resetTranscript: PropTypes.func,
   browserSupportsSpeechRecognition: PropTypes.bool,
   startListening: PropTypes.func,

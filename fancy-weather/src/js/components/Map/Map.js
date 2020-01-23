@@ -36,7 +36,10 @@ function WeatherMap(props) {
 
 WeatherMap.propTypes = {
   location: PropTypes.object,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
 };
 
 export default WeatherMap;

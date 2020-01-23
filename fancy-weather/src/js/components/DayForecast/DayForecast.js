@@ -23,7 +23,10 @@ DayForecast.propTypes = {
   forecastData: PropTypes.object,
   className: PropTypes.string,
   tempScale: PropTypes.string,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
   time: PropTypes.number,
   timezone: PropTypes.string,
 };

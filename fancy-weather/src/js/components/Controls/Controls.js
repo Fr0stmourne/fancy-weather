@@ -38,7 +38,10 @@ Controls.propTypes = {
   weather: PropTypes.string,
   time: PropTypes.number,
   language: PropTypes.string,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
 };
 
 export default Controls;

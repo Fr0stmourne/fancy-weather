@@ -97,7 +97,7 @@ function MapDispatchToProps(dispatch) {
 }
 
 App.propTypes = {
-  forecasts: PropTypes.array,
+  forecasts: PropTypes.arrayOf(PropTypes.object),
   updateWeather: PropTypes.func,
   getLocationInfo: PropTypes.func,
   onTimeTick: PropTypes.func,
@@ -107,7 +107,10 @@ App.propTypes = {
   updateBackgroundPhoto: PropTypes.func,
   todayForecast: PropTypes.object,
   location: PropTypes.object,
-  appSettings: PropTypes.object,
+  appSettings: PropTypes.shape({
+    language: PropTypes.string,
+    tempScale: PropTypes.string,
+  }),
   isLoading: PropTypes.bool,
   bgHasError: PropTypes.bool,
   cityHasError: PropTypes.bool,
