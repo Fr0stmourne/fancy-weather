@@ -14,18 +14,25 @@ import {
   updateBackgroundPhoto,
   getInitialLocation,
   updateWeather,
-  getLocation,
+  getLocationInfo,
+  updateLocation,
 } from './actions';
 import { langMapping } from './utils';
 import ErrorPopup from './components/ErrorPopup/ErrorPopup';
 
 class App extends Component {
-  onSearch = async town => {
-    await this.props.onLocationUpdate(town, this.props.appSettings.language);
-    const { coordinates } = this.props.location;
-    const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
-    await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
+  onSearch = town => {
+    // await this.props.onLocationUpdate(town);
+    // const { coordinates } = this.props.location;
+    // const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
+    // await this.props.onWeatherUpdate(this.props.appSettings.language, coordinatesStr);
+
+    this.props.updateLocation(town);
+    this.props.onLocationUpdate();
+    this.props.onWeatherUpdate();
   };
+
+  searchCity = () => {};
 
   onLangChange = async lang => {
     await this.props.onLangChange(lang); //
@@ -34,9 +41,9 @@ class App extends Component {
 
   async componentDidMount() {
     await this.props.onInitialLocationUpdate();
-    await this.onSearch(this.props.location.city);
+    await this.props.onLocationUpdate();
+    await this.props.onWeatherUpdate();
     this.props.onBgReload();
-    // setTimeout(() => this.onBgReload(), 300);
   }
 
   render() {
@@ -85,23 +92,16 @@ class App extends Component {
 }
 
 function MapStateToProps(state) {
-  return {
-    forecasts: state.forecasts,
-    todayForecast: state.todayForecast,
-    location: state.location,
-    appSettings: state.appSettings,
-    isLoading: state.isLoading,
-    bgHasError: state.bgHasError,
-    cityHasError: state.cityHasError,
-  };
+  return state;
 }
 
 function MapDispatchToProps(dispatch) {
   return {
-    onWeatherUpdate(lang, location) {
-      dispatch(updateWeather(location, lang));
+    onWeatherUpdate() {
+      dispatch(updateWeather());
     },
-    onLocationUpdate: town => dispatch(getLocation(town)),
+    onLocationUpdate: () => dispatch(getLocationInfo()),
+    updateLocation: town => dispatch(updateLocation(town)),
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),
@@ -113,6 +113,7 @@ App.propTypes = {
   forecasts: PropTypes.array,
   onWeatherUpdate: PropTypes.func,
   onLocationUpdate: PropTypes.func,
+  updateLocation: PropTypes.func,
   onTimeTick: PropTypes.func,
   onInitialLocationUpdate: PropTypes.func,
   onTempScaleChange: PropTypes.func,

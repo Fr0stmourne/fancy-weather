@@ -64,6 +64,8 @@ export function updatePreloader(booleanStatus) {
 }
 
 export function updateLocation(location) {
+  console.log('updating with', location);
+
   return {
     type: UPDATE_LOCATION,
     location,
@@ -81,11 +83,16 @@ export function updateLang(language) {
   return { type: UPDATE_LANG, language };
 }
 
-export function updateWeather(location, lang) {
-  return async dispatch => {
+export function updateWeather() {
+  return async (dispatch, getState) => {
     dispatch(updatePreloader(true));
     try {
-      const resp = await getWeatherJSON(location, lang);
+      console.log(getState());
+
+      const { coordinates } = getState().location;
+      const coordinatesStr = `${coordinates.lat}, ${coordinates.lng}`;
+      const { language } = getState().appSettings;
+      const resp = await getWeatherJSON(coordinatesStr, language);
       const currentLocationWeather = await resp.json();
       dispatch(updateForecast(currentLocationWeather));
     } catch (e) {
@@ -97,13 +104,16 @@ export function updateWeather(location, lang) {
   };
 }
 
-export function getLocation(town) {
+export function getLocationInfo() {
   return async (dispatch, getState) => {
     dispatch(updatePreloader(true));
     try {
       const { language } = getState().appSettings;
-      const resp = await getCoordinatesJSON(town, language);
+      const { city } = getState().location;
+      const resp = await getCoordinatesJSON(city, language);
       const geocodingData = await resp.json();
+      console.log(geocodingData);
+
       const cityField = geocodingData.results[0].components;
       const newLocation = {
         city: cityField.city || cityField.town || cityField.county || cityField.state || cityField.village,
@@ -112,6 +122,8 @@ export function getLocation(town) {
       };
       dispatch(updateLocation(newLocation));
     } catch (e) {
+      console.log(e);
+
       dispatch(handleDataFetchFail());
     } finally {
       dispatch(updatePreloader(false));
@@ -121,19 +133,22 @@ export function getLocation(town) {
 }
 
 export function getInitialLocation() {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
       const resp = await getUserLocation();
       const userLocation = await resp.json();
       const [lat, lng] = userLocation.loc.split(',').map(el => +el);
       userLocation.coordinates = { lat, lng };
       userLocation.country = countriesMapping[userLocation.country];
+      console.log('user location', userLocation);
+
       dispatch(updateLocation(userLocation));
     } catch (e) {
       dispatch(handleDataFetchFail());
     } finally {
       dispatch(updatePreloader(false));
       dispatch(handleDataFetchSuccess());
+      console.log('state', getState().location);
     }
   };
 }
