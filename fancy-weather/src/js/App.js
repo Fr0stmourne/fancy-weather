@@ -109,7 +109,7 @@ function MapDispatchToProps(dispatch) {
     onWeatherUpdate(lang, location) {
       dispatch(updateWeather(location, lang));
     },
-    onLocationUpdate: (city, lang) => dispatch(getLocation(city, lang)),
+    onLocationUpdate: town => dispatch(getLocation(town)),
     onInitialLocationUpdate: () => dispatch(getInitialLocation()),
     onTempScaleChange: tempScale => dispatch(updateTempScale(tempScale)),
     onLangChange: lang => dispatch(updateLang(lang)),

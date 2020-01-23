@@ -97,10 +97,11 @@ export function updateWeather(location, lang) {
   };
 }
 
-export function getLocation(town, language) {
-  return async dispatch => {
+export function getLocation(town) {
+  return async (dispatch, getState) => {
     dispatch(updatePreloader(true));
     try {
+      const { language } = getState().appSettings;
       const resp = await getCoordinatesJSON(town, language);
       const geocodingData = await resp.json();
       const cityField = geocodingData.results[0].components;
